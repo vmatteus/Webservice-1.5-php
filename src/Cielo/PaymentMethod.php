@@ -56,7 +56,7 @@ class PaymentMethod
                 $this->issuer = $issuer;
                 break;
             default:
-                throw new \UnexpectedValueException('O nome da bandeira ser ver uma string em minúsculo: visa, mastercard, diners, discover, elo, amex, jcb e aura');
+                throw new \UnexpectedValueException('O nome da bandeira deve ser uma string em minúsculo: visa, mastercard, diners, discover, elo, amex, jcb e aura');
         }
     }
 
