@@ -7,7 +7,6 @@ use \DOMXPath;
 use Cielo\Transaction;
 use Cielo\Authentication;
 use Cielo\Authorization;
-use Cielo\Token;
 
 class TransactionResponseUnserializer
 {
