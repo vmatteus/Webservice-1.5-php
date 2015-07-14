@@ -7,6 +7,7 @@ use \DOMXPath;
 use Cielo\Transaction;
 use Cielo\Authentication;
 use Cielo\Authorization;
+use Cielo\Token;
 
 class TransactionResponseUnserializer
 {
@@ -47,6 +48,7 @@ class TransactionResponseUnserializer
         $this->readFormaPagamento($this->transaction);
         $this->readAutenticacao($this->transaction);
         $this->readAutorizacao($this->transaction);
+        $this->readToken($this->transaction);
 
         return $this->transaction;
     }
@@ -117,4 +119,16 @@ class TransactionResponseUnserializer
 
         $transaction->setAuthorization($authorization);
     }
+
+    private function readToken(Transaction $transaction)
+    {
+    	$token = new Token();
+    
+    	$token->setCode($this->getValue('//c:transacao/c:token/c:dados-token/c:codigo-token'));
+    	$token->setStatus($this->getValue('//c:transacao/c:token/c:dados-token/c:status'));
+    	$token->setNumero($this->getValue('//c:transacao/c:token/c:dados-token/c:numero-cartao-truncado'));
+    	  
+    	$transaction->setToken($token);
+    }
+
 }
