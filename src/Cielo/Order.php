@@ -1,4 +1,5 @@
 <?php
+
 namespace Cielo;
 
 class Order
@@ -43,6 +44,12 @@ class Order
      */
     private $softDescriptor;
 
+    /**
+     * @param string      $number
+     * @param int         $total
+     * @param int         $currency
+     * @param null|string $dateTime
+     */
     public function __construct($number, $total, $currency = 986, $dateTime = null)
     {
         $this->setNumber($number);
@@ -54,46 +61,73 @@ class Order
         }
     }
 
+    /**
+     * @return string
+     */
     public function getNumber()
     {
         return $this->number;
     }
 
+    /**
+     * @return int
+     */
     public function getTotal()
     {
         return $this->total;
     }
 
+    /**
+     * @return int
+     */
     public function getCurrency()
     {
         return $this->currency;
     }
 
+    /**
+     * @return string
+     */
     public function getDateTime()
     {
         return $this->dateTime;
     }
 
+    /**
+     * @return string
+     */
     public function getDescription()
     {
         return $this->description;
     }
 
+    /**
+     * @return string
+     */
     public function getLanguage()
     {
         return $this->language;
     }
 
+    /**
+     * @return string
+     */
     public function getSoftDescriptor()
     {
         return $this->softDescriptor;
     }
 
+    /**
+     * @return int
+     */
     public function getShipping()
     {
         return $this->shipping;
     }
 
+    /**
+     * @param string $number
+     */
     public function setNumber($number)
     {
         if (strlen($number) < 1 || strlen($number) > 20) {
@@ -103,6 +137,9 @@ class Order
         $this->number = $number;
     }
 
+    /**
+     * @param int $total
+     */
     public function setTotal($total)
     {
         if (!is_int($total)) {
@@ -115,6 +152,9 @@ class Order
         $this->total = $total;
     }
 
+    /**
+     * @param int $currency
+     */
     public function setCurrency($currency)
     {
         if (!is_int($currency)) {
@@ -124,6 +164,9 @@ class Order
         $this->currency = $currency;
     }
 
+    /**
+     * @param string $dateTime
+     */
     public function setDateTime($dateTime)
     {
         $expr = '/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{3}-?[0-9]{2}:[0-9]{2})?$/';
@@ -135,6 +178,9 @@ class Order
         $this->dateTime = $dateTime;
     }
 
+    /**
+     * @param string $description
+     */
     public function setDescription($description)
     {
         if (strlen($description) > 1024) {
@@ -144,6 +190,9 @@ class Order
         $this->description = $description;
     }
 
+    /**
+     * @param string $language
+     */
     public function setLanguage($language)
     {
         switch ($language) {
@@ -159,6 +208,9 @@ class Order
         }
     }
 
+    /**
+     * @param int $shipping
+     */
     public function setShipping($shipping)
     {
         if (!is_int($shipping)) {
@@ -170,6 +222,9 @@ class Order
         $this->shipping = $shipping;
     }
 
+    /**
+     * @param string $softDescriptor
+     */
     public function setSoftDescriptor($softDescriptor)
     {
         if (strlen($softDescriptor) > 13) {
