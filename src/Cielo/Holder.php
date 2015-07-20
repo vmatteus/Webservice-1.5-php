@@ -1,4 +1,5 @@
 <?php
+
 namespace Cielo;
 
 class Holder
@@ -9,7 +10,7 @@ class Holder
     const CVV_NONEXISTENT = 9;
 
     /**
-     * @var integer
+     * @var string
      */
     private $creditCardNumber;
 
@@ -19,12 +20,12 @@ class Holder
     private $expiration;
 
     /**
-     * @var integer
+     * @var int
      */
     private $cvvIndicator = Holder::CVV_NOT_INFORMED;
 
     /**
-     * @var integer
+     * @var string
      */
     private $cvv;
 
@@ -38,6 +39,13 @@ class Holder
      */
     private $token;
 
+    /**
+     * @param string      $tokenOrNumber
+     * @param null|string $expirationYear
+     * @param null|string $expirationMonth
+     * @param int         $indicator
+     * @param int         $cvv
+     */
     public function __construct(
         $tokenOrNumber,
         $expirationYear = null,
@@ -47,47 +55,72 @@ class Holder
     ) {
         if (func_num_args() == 1) {
             $this->setToken($tokenOrNumber);
-        } else {
-            $this->setCreditCardNumber($tokenOrNumber);
-            $this->setExpiration($expirationYear, $expirationMonth);
-            $this->setCVVIndicator($indicator);
 
-            if ($indicator == Holder::CVV_INFORMED) {
-                $this->setCVV($cvv);
-            }
+            return null;
+        }
+
+        $this->setCreditCardNumber($tokenOrNumber);
+        $this->setExpiration($expirationYear, $expirationMonth);
+        $this->setCVVIndicator($indicator);
+
+        if ($indicator == Holder::CVV_INFORMED) {
+            $this->setCVV($cvv);
         }
     }
 
+    /**
+     * @return string
+     */
     public function getCreditCardNumber()
     {
         return $this->creditCardNumber;
     }
 
+    /**
+     * @return string
+     */
     public function getExpiration()
     {
         return $this->expiration;
     }
 
+    /**
+     * @return int
+     */
     public function getCVVIndicator()
     {
         return $this->cvvIndicator;
     }
 
+    /**
+     * @return string
+     */
     public function getCVV()
     {
         return $this->cvv;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->holderName;
     }
 
+    /**
+     * @return string
+     */
     public function getToken()
     {
         return $this->token;
     }
 
+    /**
+     * @param  string $number
+     * @throws \UnexpectedValueException se o número do cartão não for numérico
+     * ou exceder 19 dígitos
+     */
     public function setCreditCardNumber($number)
     {
         if (!is_numeric($number) || strlen($number) > 19) {
@@ -99,6 +132,16 @@ class Holder
         $this->creditCardNumber = $number;
     }
 
+    /**
+     * @param string $expirationYear
+     * @param string $expirationMonth
+     *
+     * @throws \UnexpectedValueException se o ano de expiração não for numérico
+     * ou não conter 4 dígitos
+     *
+     * @throws \UnexpectedValueException se o mês de expiração não for numérico
+     * ou não estiver entre 1 e 12
+     */
     public function setExpiration($expirationYear, $expirationMonth)
     {
         if (!is_numeric($expirationYear) || strlen($expirationYear) != 4) {
@@ -112,6 +155,10 @@ class Holder
         $this->expiration = sprintf('%4d%02d', $expirationYear, $expirationMonth);
     }
 
+    /**
+     * @param  int $indicator
+     * @throws \UnexpectedValueException se o indicador for inválido
+     */
     public function setCVVIndicator($indicator)
     {
         switch ($indicator) {
@@ -130,6 +177,11 @@ class Holder
         }
     }
 
+    /**
+     * @param  string $cvv
+     * @throws \UnexpectedValueException se o CVV não for numérico ou não conter
+     * 3 ou 4 dígitos
+     */
     public function setCVV($cvv)
     {
         if (!is_numeric($cvv) || strlen($cvv) < 3 || strlen($cvv) > 4) {
@@ -142,6 +194,11 @@ class Holder
         $this->setCVVIndicator(Holder::CVV_INFORMED);
     }
 
+    /**
+     * @param  string $name
+     * @throws \UnexpectedValueException se o nome do portador do cartão não for
+     * do tipo `string` ou exceder 50 caracteres
+     */
     public function setName($name)
     {
         if (!is_string($name) || strlen($name) > 50) {
@@ -151,6 +208,11 @@ class Holder
         $this->holderName = $name;
     }
 
+    /**
+     * @param  string $token
+     * @throws \UnexpectedValueException se o token exceder 100 caracteres ou não
+     * for do tipo `string`
+     */
     public function setToken($token)
     {
         if (!is_string($token) || strlen($token) > 100) {
