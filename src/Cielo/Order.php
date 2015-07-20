@@ -195,17 +195,17 @@ class Order
      */
     public function setLanguage($language)
     {
-        switch ($language) {
-            case 'PT':
-            case 'EN':
-            case 'ES':
-                $this->language = $language;
-                break;
-            default:
-                throw new \UnexpectedValueException(
-                    'O idioma deve ser informado como PT (português), EN (inglês) ou ES (espanhol)'
-                );
+        $language = strtoupper($language);
+
+        $allowedLanguages = ['PT', 'EN', 'ES'];
+
+        if (! in_array($language, $allowedLanguages, true)) {
+            throw new \UnexpectedValueException(
+                'O idioma deve ser informado como PT (português), EN (inglês) ou ES (espanhol)'
+            );
         }
+
+        $this->language = $language;
     }
 
     /**
