@@ -56,7 +56,7 @@ class Order
         $this->setTotal($total);
         $this->setCurrency($currency);
 
-        if ($dateTime == null) {
+        if ($dateTime === null) {
             $this->setDateTime(@date('Y-m-d\TH:i:s'));
         }
     }
@@ -126,7 +126,9 @@ class Order
     }
 
     /**
-     * @param string $number
+     * @param  string $number
+     * @throws \UnexpectedValueException se o número do pedido não estiver de 1
+     * à 20 caracteres
      */
     public function setNumber($number)
     {
@@ -138,7 +140,8 @@ class Order
     }
 
     /**
-     * @param int $total
+     * @param  int $total
+     * @throws \UnexpectedValueException se o valor total do pedido não for inteiro
      */
     public function setTotal($total)
     {
@@ -153,7 +156,9 @@ class Order
     }
 
     /**
-     * @param int $currency
+     * @param  int $currency
+     * @throws \UnexpectedValueException se a moeda informada não estiver enumerada
+     * na especificação ISO 4217
      */
     public function setCurrency($currency)
     {
@@ -165,7 +170,9 @@ class Order
     }
 
     /**
-     * @param string $dateTime
+     * @param  string $dateTime
+     * @throws \UnexpectedValueException se a data informada `$dateTime` não estiver
+     * no formato `aaaa-MM-ddTHH:mm:ss`
      */
     public function setDateTime($dateTime)
     {
@@ -179,7 +186,9 @@ class Order
     }
 
     /**
-     * @param string $description
+     * @param  string $description
+     * @throws \UnexpectedValueException se a descrição `$description` exceder
+     * 1024 caracteres
      */
     public function setDescription($description)
     {
@@ -191,7 +200,9 @@ class Order
     }
 
     /**
-     * @param string $language
+     * @param  string $language
+     * @throws \UnexpectedValueException se o idioma informado não for aceito
+     * (o mesmo deve ser `PT`, `EN` ou `ES`)
      */
     public function setLanguage($language)
     {
@@ -209,7 +220,9 @@ class Order
     }
 
     /**
-     * @param int $shipping
+     * @param  int $shipping
+     * @throws \UnexpectedValueException se o valor da autorização da taxa de
+     * embarque não for inteiro
      */
     public function setShipping($shipping)
     {
@@ -223,7 +236,8 @@ class Order
     }
 
     /**
-     * @param string $softDescriptor
+     * @param  string $softDescriptor
+     * @throws \UnexpectedValueException se `softDescriptor` exceder 13 caracteres
      */
     public function setSoftDescriptor($softDescriptor)
     {
