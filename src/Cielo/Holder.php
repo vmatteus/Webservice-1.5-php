@@ -38,12 +38,13 @@ class Holder
      */
     private $token;
 
-    public function __construct($tokenOrNumber,
-                                $expirationYear = null,
-                                $expirationMonth = null,
-                                $indicator = Holder::CVV_NOT_INFORMED,
-                                $cvv = null)
-    {
+    public function __construct(
+        $tokenOrNumber,
+        $expirationYear = null,
+        $expirationMonth = null,
+        $indicator = Holder::CVV_NOT_INFORMED,
+        $cvv = null
+    ) {
         if (func_num_args() == 1) {
             $this->setToken($tokenOrNumber);
         } else {
@@ -90,7 +91,9 @@ class Holder
     public function setCreditCardNumber($number)
     {
         if (!is_numeric($number) || strlen($number) > 19) {
-            throw new \UnexpectedValueException('O número do cartão deve conter apenas números e ter no máximo 19 caracteres');
+            throw new \UnexpectedValueException(
+                'O número do cartão deve conter apenas números e ter no máximo 19 caracteres'
+            );
         }
 
         $this->creditCardNumber = $number;
@@ -116,9 +119,12 @@ class Holder
             case Holder::CVV_UNREADABLE:
             case Holder::CVV_NONEXISTENT:
                 $this->cvv = null;
+                break;
+
             case Holder::CVV_INFORMED:
                 $this->cvvIndicator = $indicator;
                 break;
+
             default:
                 throw new \UnexpectedValueException('Indicador inválido');
         }
@@ -127,7 +133,9 @@ class Holder
     public function setCVV($cvv)
     {
         if (!is_numeric($cvv) || strlen($cvv) < 3 || strlen($cvv) > 4) {
-            throw new \UnexpectedValueException('O código de segurança deve ser um número e deve ter 3 ou 4 caracteres');
+            throw new \UnexpectedValueException(
+                'O código de segurança deve ser um número e deve ter 3 ou 4 caracteres'
+            );
         }
 
         $this->cvv = $cvv;

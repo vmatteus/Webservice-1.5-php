@@ -1,10 +1,9 @@
 <?php
 namespace Cielo;
 
+use Cielo\Serializer\AuthorizationRequestSerializer;
 use Cielo\Serializer\TransactionRequestSerializer;
 use Cielo\Serializer\TransactionResponseUnserializer;
-
-use Cielo\Serializer\AuthorizationRequestSerializer;
 
 class Cielo
 {
@@ -12,7 +11,7 @@ class Cielo
     const TEST = 'https://qasecommerce.cielo.com.br/servicos/ecommwsec.do';
 
     /**
-     * @var Cielo\Merchant;
+     * @var Merchant
      */
     private $merchant;
 
@@ -31,17 +30,18 @@ class Cielo
         $this->endpoint = $endpoint;
     }
 
-    public function holder($tokenOrNumber,
-                           $expirationYear = null,
-                           $expirationMonth = null,
-                           $indicator = Holder::CVV_NOT_INFORMED,
-                           $cvv = null)
-    {
+    public function holder(
+        $tokenOrNumber,
+        $expirationYear = null,
+        $expirationMonth = null,
+        $indicator = Holder::CVV_NOT_INFORMED,
+        $cvv = null
+    ) {
         if (func_num_args() == 1) {
             return new Holder($tokenOrNumber);
-        } else {
-            return new Holder($tokenOrNumber, $expirationYear, $expirationMonth, $indicator, $cvv);
         }
+
+        return new Holder($tokenOrNumber, $expirationYear, $expirationMonth, $indicator, $cvv);
     }
 
     public function merchant($id, $key)
@@ -61,13 +61,14 @@ class Cielo
         return new PaymentMethod($issuer, $product, $installments);
     }
 
-    public function transaction(Holder $holder,
-                                Order $order,
-                                PaymentMethod $paymentMethod,
-                                $returnURL,
-                                $authorize,
-                                $capture)
-    {
+    public function transaction(
+        Holder $holder,
+        Order $order,
+        PaymentMethod $paymentMethod,
+        $returnURL,
+        $authorize,
+        $capture
+    ) {
         return new Transaction($this->merchant, $holder, $order, $paymentMethod, $returnURL, $authorize, $capture);
     }
 
@@ -96,23 +97,23 @@ class Cielo
 
     public function authorizationRequest(Transaction $transaction)
     {
-        $transactionRequestSerializer = new AuthorizationRequestSerializer();
+        $serializer = new AuthorizationRequestSerializer();
 
-        $response = $this->sendHttpRequest($transactionRequestSerializer->serialize($transaction));
+        $response = $this->sendHttpRequest($serializer->serialize($transaction));
 
-        $transactionResponseUnserializer = new TransactionResponseUnserializer($transaction);
+        $unserializer= new TransactionResponseUnserializer($transaction);
 
-        return $transactionResponseUnserializer->unserialize($response);
+        return $unserializer->unserialize($response);
     }
 
     public function transactionRequest(Transaction $transaction)
     {
-        $transactionRequestSerializer = new TransactionRequestSerializer();
+        $serializer = new TransactionRequestSerializer();
 
-        $response = $this->sendHttpRequest($transactionRequestSerializer->serialize($transaction));
+        $response = $this->sendHttpRequest($serializer->serialize($transaction));
 
-        $transactionResponseUnserializer = new TransactionResponseUnserializer($transaction);
+        $unserializer = new TransactionResponseUnserializer($transaction);
 
-        return $transactionResponseUnserializer->unserialize($response);
+        return $unserializer->unserialize($response);
     }
 }

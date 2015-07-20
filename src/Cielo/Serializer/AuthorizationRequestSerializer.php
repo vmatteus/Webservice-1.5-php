@@ -1,9 +1,8 @@
 <?php
 namespace Cielo\Serializer;
 
-use \DOMDocument;
-use \DOMNode;
 use Cielo\Transaction;
+use DOMDocument;
 
 class AuthorizationRequestSerializer extends RequestSerializer
 {
@@ -12,9 +11,9 @@ class AuthorizationRequestSerializer extends RequestSerializer
         libxml_use_internal_errors(true);
         $document = new DOMDocument('1.0', 'utf-8');
 
-        $requisicaoAutorizacao = $this->createRequisicaoAutorizacao($transaction, $document);
+        $autorizacao = $this->createRequisicaoAutorizacao($transaction, $document);
 
-        $document->appendChild($requisicaoAutorizacao);
+        $document->appendChild($autorizacao);
         $document->schemaValidate('ecommerce.xsd');
 
         $exception = new \DomainException('Erro na criação do XML');
@@ -36,13 +35,13 @@ class AuthorizationRequestSerializer extends RequestSerializer
 
     private function createRequisicaoAutorizacao(Transaction $transaction, DOMDocument $document)
     {
-        $requisicaoAutorizacao = $document->createElementNS(RequestSerializer::NS, 'requisicao-autorizacao-tid');
-        $requisicaoAutorizacao->setAttribute('id', $transaction->getOrder()->getNumber());
-        $requisicaoAutorizacao->setAttribute('versao', RequestSerializer::VERSION);
+        $autorizacao = $document->createElementNS(RequestSerializer::NS, 'requisicao-autorizacao-tid');
+        $autorizacao->setAttribute('id', $transaction->getOrder()->getNumber());
+        $autorizacao->setAttribute('versao', RequestSerializer::VERSION);
 
-        $requisicaoAutorizacao->appendChild($document->createElementNS(RequestSerializer::NS, 'tid', $transaction->getTid()));
-        $requisicaoAutorizacao->appendChild($this->createDadosEc($transaction, $document));
+        $autorizacao->appendChild($document->createElementNS(RequestSerializer::NS, 'tid', $transaction->getTid()));
+        $autorizacao->appendChild($this->createDadosEc($transaction, $document));
 
-        return $requisicaoAutorizacao;
+        return $autorizacao;
     }
 }
