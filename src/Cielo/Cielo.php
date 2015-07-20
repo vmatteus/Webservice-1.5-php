@@ -1,4 +1,5 @@
 <?php
+
 namespace Cielo;
 
 use Cielo\Serializer\AuthorizationRequestSerializer;
@@ -20,9 +21,14 @@ class Cielo
      */
     private $endpoint = Cielo::PRODUCTION;
 
+    /**
+     * @param string $id
+     * @param string $key
+     * @param string $endpoint
+     */
     public function __construct($id, $key, $endpoint = Cielo::PRODUCTION)
     {
-        if (!filter_var($endpoint, FILTER_VALIDATE_URL)) {
+        if (! filter_var($endpoint, FILTER_VALIDATE_URL)) {
             throw new \UnexpectedValueException('Endpoint inválido.');
         }
 
@@ -30,6 +36,14 @@ class Cielo
         $this->endpoint = $endpoint;
     }
 
+    /**
+     * @param  string      $tokenOrNumber
+     * @param  null|string $expirationYear
+     * @param  null|string $expirationMonth
+     * @param  int         $indicator
+     * @param  null|string $cvv
+     * @return Holder
+     */
     public function holder(
         $tokenOrNumber,
         $expirationYear = null,
@@ -44,6 +58,11 @@ class Cielo
         return new Holder($tokenOrNumber, $expirationYear, $expirationMonth, $indicator, $cvv);
     }
 
+    /**
+     * @param  string $id
+     * @param  string $key
+     * @return Merchant
+     */
     public function merchant($id, $key)
     {
         $this->merchant = new Merchant($id, $key);
@@ -51,16 +70,38 @@ class Cielo
         return $this->merchant;
     }
 
+    /**
+     * @param  string      $number
+     * @param  int         $total
+     * @param  int         $currency
+     * @param  null|string $dateTime
+     * @return Order
+     */
     public function order($number, $total, $currency = 986, $dateTime = null)
     {
         return new Order($number, $total, $currency, $dateTime);
     }
 
+    /**
+     * @param  string     $issuer
+     * @param  int        $product
+     * @param  string|int $installments
+     * @return PaymentMethod
+     */
     public function paymentMethod($issuer, $product = PaymentMethod::CREDITO_A_VISTA, $installments = 1)
     {
         return new PaymentMethod($issuer, $product, $installments);
     }
 
+    /**
+     * @param  Holder        $holder
+     * @param  Order         $order
+     * @param  PaymentMethod $paymentMethod
+     * @param  string        $returnURL
+     * @param  int           $authorize
+     * @param  bool          $capture
+     * @return Transaction
+     */
     public function transaction(
         Holder $holder,
         Order $order,
