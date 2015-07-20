@@ -4,6 +4,7 @@ namespace Cielo\Http;
 
 /**
  * @author Andrey K. Vital <andreykvital@gmail.com>
+ * @codeCoverageIgnoreFile
  */
 final class CurlOnlyPostHttpClient implements OnlyPostHttpClientInterface
 {
