@@ -148,7 +148,16 @@ TRANSACAO
 
         $cielo = new Cielo('1006993069', '25fbb997438630f30b112d033ce2e621b34f3', Cielo::TEST, $client);
 
-        $cielo->transactionRequest($this->createTransaction());
+        $transaction = $cielo->transactionRequest($this->createTransaction());
+
+        $this->assertInstanceOf(Transaction::class, $transaction);
+        $this->assertInstanceOf(Order::class, $transaction->getOrder());
+        $this->assertInstanceOf(PaymentMethod::class, $transaction->getPaymentMethod());
+
+        $this->assertEquals(
+            'https://ecommerce.cielo.com.br/web/index.cbmp?id=a783251',
+            $transaction->getAuthenticationURL()
+        );
     }
 
     /**
