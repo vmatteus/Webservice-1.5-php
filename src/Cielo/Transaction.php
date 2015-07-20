@@ -94,6 +94,11 @@ class Transaction
      */
     private $avs;
 
+    /**
+     * @var Token
+     */
+    private $token;
+
     public function __construct(
         Merchant $merchant,
         Holder $holder,
@@ -316,5 +321,13 @@ class Transaction
     public function setAuthorization(Authorization $authorization)
     {
         $this->authorization = $authorization;
+    }
+
+    /**
+     * @param Token $token
+     */
+    public function setToken(Token $token)
+    {
+        $this->token = $token;
     }
 }
