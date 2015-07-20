@@ -44,42 +44,46 @@ class PaymentMethod
 
     public function setIssuer($issuer)
     {
-        switch ($issuer) {
-            case PaymentMethod::VISA:
-            case PaymentMethod::MASTERCARD:
-            case PaymentMethod::DINERS:
-            case PaymentMethod::DISCOVER:
-            case PaymentMethod::ELO:
-            case PaymentMethod::AMEX:
-            case PaymentMethod::JCB:
-            case PaymentMethod::AURA:
-                $this->issuer = $issuer;
-                break;
-            default:
-                throw new \UnexpectedValueException(
-                    'O nome da bandeira deve ser uma string em minúsculo: visa, ' .
-                    'mastercard, diners, discover, elo, amex, jcb e aura'
-                );
+        $allowedIssuers = [
+            PaymentMethod::VISA,
+            PaymentMethod::MASTERCARD,
+            PaymentMethod::DINERS,
+            PaymentMethod::DISCOVER,
+            PaymentMethod::ELO,
+            PaymentMethod::AMEX,
+            PaymentMethod::JCB,
+            PaymentMethod::AURA,
+        ];
+
+        if (! in_array($issuer, $allowedIssuers, true)) {
+            throw new \UnexpectedValueException(
+                'O nome da bandeira deve ser uma string em minúsculo: visa, ' .
+                'mastercard, diners, discover, elo, amex, jcb e aura'
+            );
         }
+
+        $this->issuer = $issuer;
     }
 
     public function setProduct($product)
     {
-        switch ($product) {
-            case PaymentMethod::CREDITO_A_VISTA:
-            case PaymentMethod::DEBITO:
-                $this->installments = 1;
-                break;
+        $isAllowedProduct = (
+            $product === PaymentMethod::CREDITO_A_VISTA ||
+            $product === PaymentMethod::DEBITO ||
+            $product === PaymentMethod::PARCELADO_LOJA
+        );
 
-            case PaymentMethod::PARCELADO_LOJA:
-                $this->product = $product;
-                break;
-
-            default:
-                throw new \UnexpectedValueException(
-                    'Produto inválido. Utilize 1 – Crédito à Vista, 2 – Parcelado loja ou A – Débito.'
-                );
+        if (! $isAllowedProduct) {
+            throw new \UnexpectedValueException(
+                'Produto inválido. Utilize 1 – Crédito à Vista, 2 – Parcelado loja ou A – Débito.'
+            );
         }
+
+        if ($product === PaymentMethod::CREDITO_A_VISTA || $product === PaymentMethod::DEBITO) {
+            $this->installments = 1;
+        }
+
+        $this->product = $product;
     }
 
     public function setInstallments($installments)
