@@ -78,4 +78,22 @@ class AuthorizationTest extends TestCase
     {
         $this->assertEquals(221766, $this->authorization->getNsu());
     }
+
+    /**
+     * @test
+     */
+    public function getArp()
+    {
+        $this->assertNull($this->authorization->getArp());
+    }
+
+    /**
+     * @test
+     */
+    public function setArp()
+    {
+        $this->authorization->setArp(123456);
+
+        $this->assertEquals(123456, $this->authorization->getArp());
+    }
 }
