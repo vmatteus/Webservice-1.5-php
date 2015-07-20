@@ -39,6 +39,18 @@ class HolderTest extends TestCase
     /**
      * @test
      */
+    public function definesTokenOnCtor()
+    {
+        $token = 'TuS6LeBHWjqFFtE7S3zR052Jl/KUlD+tYJFpAdlA87E=';
+
+        $holder = new Holder($token);
+
+        $this->assertEquals($token, $holder->getToken());
+    }
+
+    /**
+     * @test
+     */
     public function getCreditCardNumber()
     {
         $this->assertEquals('4012001038443335', $this->holder->getCreditCardNumber());
@@ -113,6 +125,46 @@ class HolderTest extends TestCase
         $this->setExpectedException(\UnexpectedValueException::class);
 
         $this->holder->setCVV(null);
+    }
+
+    /**
+     * @return array
+     */
+    public function provideInvalidExpirationParameters()
+    {
+        return [
+            [null, null],
+            [false, false],
+            ['', ''],
+            [-1, -1],
+            ['99999', '2'],
+            ['2015', '13'],
+        ];
+    }
+
+    /**
+     * @test
+     * @param mixed $year
+     * @param mixed $month
+     * @dataProvider provideInvalidExpirationParameters
+     */
+    public function setExpirationThrowsUnexpectedValue($year, $month)
+    {
+        $this->setExpectedException(\UnexpectedValueException::class);
+
+        $this->holder->setExpiration($year, $month);
+    }
+
+    /**
+     * @test
+     */
+    public function setCVVIndicatorAssignsNullToCvvProperty()
+    {
+        $this->assertNotNull($this->holder->getCVV());
+
+        $this->holder->setCVVIndicator(Holder::CVV_NOT_INFORMED);
+
+        $this->assertNull($this->holder->getCVV());
     }
 
     /**
