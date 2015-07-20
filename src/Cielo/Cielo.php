@@ -2,6 +2,8 @@
 
 namespace Cielo;
 
+use Cielo\Http\CurlOnlyPostHttpClient;
+use Cielo\Http\OnlyPostHttpClientInterface;
 use Cielo\Serializer\AuthorizationRequestSerializer;
 use Cielo\Serializer\TransactionRequestSerializer;
 use Cielo\Serializer\TransactionResponseUnserializer;
@@ -22,18 +24,29 @@ class Cielo
     private $endpoint = Cielo::PRODUCTION;
 
     /**
-     * @param string $id
-     * @param string $key
-     * @param string $endpoint
+     * @var OnlyPostHttpClientInterface
      */
-    public function __construct($id, $key, $endpoint = Cielo::PRODUCTION)
-    {
+    private $onlyPostClient;
+
+    /**
+     * @param string                      $id
+     * @param string                      $key
+     * @param string                      $endpoint
+     * @param OnlyPostHttpClientInterface $onlyPostClient
+     */
+    public function __construct(
+        $id,
+        $key,
+        $endpoint = Cielo::PRODUCTION,
+        OnlyPostHttpClientInterface $onlyPostClient = null
+    ) {
         if (! filter_var($endpoint, FILTER_VALIDATE_URL)) {
             throw new \UnexpectedValueException('Endpoint inválido.');
         }
 
-        $this->merchant = $this->merchant($id, $key);
-        $this->endpoint = $endpoint;
+        $this->merchant       = $this->merchant($id, $key);
+        $this->endpoint       = $endpoint;
+        $this->onlyPostClient = $onlyPostClient ?: new CurlOnlyPostHttpClient();
     }
 
     /**
@@ -113,27 +126,26 @@ class Cielo
         return new Transaction($this->merchant, $holder, $order, $paymentMethod, $returnURL, $authorize, $capture);
     }
 
+    /**
+     * @param  string $message
+     * @return string
+     */
     private function sendHttpRequest($message)
     {
-        $headers = ['Content-Type: application/x-www-form-urlencoded; charset=utf-8',
-                    'Accept: text/xml; charset=utf-8',
-                    'User-Agent: PHP-SDK: 1.0'];
+        /* @var callable|OnlyPostHttpClientInterface $sendPostRequest */
+        $sendPostRequest = $this->onlyPostClient;
 
-        $curl = curl_init();
-
-        curl_setopt($curl, CURLOPT_URL, $this->endpoint);
-        curl_setopt($curl, CURLOPT_SSLVERSION, 4);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query(['mensagem' => $message]));
-
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-
-        return $response;
+        return $sendPostRequest(
+            $this->endpoint,
+            [
+                'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8',
+                'Accept' => 'text/xml; charset=utf-8',
+                'User-Agent' => 'PHP-SDK: 1.0'
+            ],
+            [
+                'mensagem' => $message
+            ]
+        );
     }
 
     public function authorizationRequest(Transaction $transaction)
