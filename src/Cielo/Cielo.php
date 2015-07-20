@@ -10,7 +10,14 @@ use Cielo\Serializer\TransactionResponseUnserializer;
 
 class Cielo
 {
+    /**
+     * @var string
+     */
     const PRODUCTION = 'https://ecommerce.cielo.com.br/servicos/ecommwsec.do';
+
+    /**
+     * @var string
+     */
     const TEST = 'https://qasecommerce.cielo.com.br/servicos/ecommwsec.do';
 
     /**
@@ -44,7 +51,7 @@ class Cielo
             throw new \UnexpectedValueException('Endpoint inválido.');
         }
 
-        $this->merchant       = $this->merchant($id, $key);
+        $this->merchant       = new Merchant($id, $key);
         $this->endpoint       = $endpoint;
         $this->onlyPostClient = $onlyPostClient ?: new CurlOnlyPostHttpClient();
     }
@@ -69,18 +76,6 @@ class Cielo
         }
 
         return new Holder($tokenOrNumber, $expirationYear, $expirationMonth, $indicator, $cvv);
-    }
-
-    /**
-     * @param  string $id
-     * @param  string $key
-     * @return Merchant
-     */
-    public function merchant($id, $key)
-    {
-        $this->merchant = new Merchant($id, $key);
-
-        return $this->merchant;
     }
 
     /**
@@ -148,6 +143,12 @@ class Cielo
         );
     }
 
+    /**
+     * @param  Transaction $transaction
+     * @return Transaction
+     * @throws CieloException se algum erro ocorrer com na requisição pela
+     * autorização
+     */
     public function authorizationRequest(Transaction $transaction)
     {
         $serializer = new AuthorizationRequestSerializer();
@@ -159,6 +160,11 @@ class Cielo
         return $unserializer->unserialize($response);
     }
 
+    /**
+     * @param  Transaction $transaction
+     * @return Transaction
+     * @throws CieloException se algum erro ocorrer na requisição pela transação
+     */
     public function transactionRequest(Transaction $transaction)
     {
         $serializer = new TransactionRequestSerializer();
