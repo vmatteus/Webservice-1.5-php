@@ -1,9 +1,8 @@
 <?php
 namespace Cielo\Serializer;
 
-use \DOMDocument;
-use \DOMNode;
 use Cielo\Transaction;
+use DOMDocument;
 
 class AuthorizationRequestSerializer extends RequestSerializer
 {
