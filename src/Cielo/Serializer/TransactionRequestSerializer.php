@@ -1,4 +1,5 @@
 <?php
+
 namespace Cielo\Serializer;
 
 use Cielo\Transaction;
@@ -6,6 +7,9 @@ use DOMDocument;
 
 class TransactionRequestSerializer extends RequestSerializer
 {
+    /**
+     * {@inheritDoc}
+     */
     public function serialize(Transaction $transaction)
     {
         libxml_use_internal_errors(true);
@@ -36,6 +40,11 @@ class TransactionRequestSerializer extends RequestSerializer
         return $document->saveXML();
     }
 
+    /**
+     * @param  Transaction $transaction
+     * @param  DOMDocument $document
+     * @return \DOMElement
+     */
     private function createRequisicaoTransacao(Transaction $transaction, DOMDocument $document)
     {
         $requisicaoTransacao = $document->createElementNS(RequestSerializer::NS, 'requisicao-transacao');
@@ -60,7 +69,7 @@ class TransactionRequestSerializer extends RequestSerializer
 
         $avsXML = $transaction->getAvs();
 
-        if (!empty($avsXML)) {
+        if (! empty($avsXML)) {
             $avs = $document->createElementNS(TransactionRequestSerializer::NS, 'avs');
             $avs->appendChild($document->createCDATASection($avsXML));
 
@@ -70,6 +79,11 @@ class TransactionRequestSerializer extends RequestSerializer
         return $requisicaoTransacao;
     }
 
+    /**
+     * @param  Transaction $transaction
+     * @param  DOMDocument $document
+     * @return \DOMElement
+     */
     private function createDadosPortador(Transaction $transaction, DOMDocument $document)
     {
         $holder = $transaction->getHolder();
@@ -90,6 +104,11 @@ class TransactionRequestSerializer extends RequestSerializer
         return $dadosPortador;
     }
 
+    /**
+     * @param  Transaction $transaction
+     * @param  DOMDocument $document
+     * @return \DOMElement
+     */
     private function createDadosPedido(Transaction $transaction, DOMDocument $document)
     {
         $order = $transaction->getOrder();
@@ -108,6 +127,11 @@ class TransactionRequestSerializer extends RequestSerializer
         return $dadosPedido;
     }
 
+    /**
+     * @param  Transaction $transaction
+     * @param  DOMDocument $document
+     * @return \DOMElement
+     */
     private function createFormaPagamento(Transaction $transaction, DOMDocument $document)
     {
         $paymentMethod = $transaction->getPaymentMethod();
