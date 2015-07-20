@@ -56,7 +56,10 @@ class PaymentMethod
                 $this->issuer = $issuer;
                 break;
             default:
-                throw new \UnexpectedValueException('O nome da bandeira deve ser uma string em minúsculo: visa, mastercard, diners, discover, elo, amex, jcb e aura');
+                throw new \UnexpectedValueException(
+                    'O nome da bandeira deve ser uma string em minúsculo: visa, ' .
+                    'mastercard, diners, discover, elo, amex, jcb e aura'
+                );
         }
     }
 
@@ -66,24 +69,34 @@ class PaymentMethod
             case PaymentMethod::CREDITO_A_VISTA:
             case PaymentMethod::DEBITO:
                 $this->installments = 1;
+                break;
+
             case PaymentMethod::PARCELADO_LOJA:
                 $this->product = $product;
                 break;
+
             default:
-                throw new \UnexpectedValueException('Produto inválido. Utilize 1 – Crédito à Vista, 2 – Parcelado loja ou A – Débito.');
+                throw new \UnexpectedValueException(
+                    'Produto inválido. Utilize 1 – Crédito à Vista, 2 – Parcelado loja ou A – Débito.'
+                );
         }
     }
 
     public function setInstallments($installments)
     {
-        if (($this->product == PaymentMethod::CREDITO_A_VISTA || $this->product == PaymentMethod::DEBITO) &&
-            $installments !== 1) {
+        $isOneTimePayment = (
+            $this->product === PaymentMethod::DEBITO ||
+            $this->product === PaymentMethod::CREDITO_A_VISTA
+        );
 
+        if ($isOneTimePayment && $installments !== 1) {
             throw new \UnexpectedValueException('Para crédito à vista ou débito, o número de parcelas deve ser 1');
         }
 
         if ($installments < 1 || strlen($installments) > 2) {
-            throw new \UnexpectedValueException('O número de parcelas deve ser maior ou igual a 1 e deve ter no máximo 2 dígitos');
+            throw new \UnexpectedValueException(
+                'O número de parcelas deve ser maior ou igual a 1 e deve ter no máximo 2 dígitos'
+            );
         }
 
         $this->installments = $installments;

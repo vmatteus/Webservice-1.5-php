@@ -52,8 +52,6 @@ class Order
         if ($dateTime == null) {
             $this->setDateTime(@date('Y-m-d\TH:i:s'));
         }
-
-
     }
 
     public function getNumber()
@@ -108,7 +106,10 @@ class Order
     public function setTotal($total)
     {
         if (!is_int($total)) {
-            throw new \UnexpectedValueException('O valor total do pedido deve ser informado como inteiro e já deve incluir valor de frete e outras despesas/taxas');
+            throw new \UnexpectedValueException(
+                'O valor total do pedido deve ser informado como inteiro e já ' .
+                'deve incluir valor de frete e outras despesas/taxas'
+            );
         }
 
         $this->total = $total;
@@ -125,7 +126,9 @@ class Order
 
     public function setDateTime($dateTime)
     {
-        if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{3}-?[0-9]{2}:[0-9]{2})?$/', $dateTime)) {
+        $expr = '/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{3}-?[0-9]{2}:[0-9]{2})?$/';
+
+        if (!preg_match($expr, $dateTime)) {
             throw new \UnexpectedValueException('A data deve ser informada utilizando o formato aaaa-MM-ddTHH:mm:ss');
         }
 
@@ -150,14 +153,18 @@ class Order
                 $this->language = $language;
                 break;
             default:
-                throw new \UnexpectedValueException('O idioma deve ser informado como PT (português), EN (inglês) ou ES (espanhol)');
+                throw new \UnexpectedValueException(
+                    'O idioma deve ser informado como PT (português), EN (inglês) ou ES (espanhol)'
+                );
         }
     }
 
     public function setShipping($shipping)
     {
         if (!is_int($shipping)) {
-            throw new \UnexpectedValueException('O valor da autorização que deve ser destinado à taxa de embarque deve ser informada como inteiro');
+            throw new \UnexpectedValueException(
+                'O valor da autorização que deve ser destinado à taxa de embarque deve ser informada como inteiro'
+            );
         }
 
         $this->shipping = $shipping;
@@ -166,7 +173,9 @@ class Order
     public function setSoftDescriptor($softDescriptor)
     {
         if (strlen($softDescriptor) > 13) {
-            throw new \UnexpectedValueException('O texto que será exibido na fatura do portador deve ser uma string com até 13 caracteres');
+            throw new \UnexpectedValueException(
+                'O texto que será exibido na fatura do portador deve ser uma string com até 13 caracteres'
+            );
         }
 
         $this->softDescriptor = $softDescriptor;

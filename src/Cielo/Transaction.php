@@ -94,14 +94,15 @@ class Transaction
      */
     private $avs;
 
-    public function __construct(Merchant $merchant,
-                                Holder $holder,
-                                Order $order,
-                                PaymentMethod $paymentMethod,
-                                $returnURL,
-                                $authorize,
-                                $capture)
-    {
+    public function __construct(
+        Merchant $merchant,
+        Holder $holder,
+        Order $order,
+        PaymentMethod $paymentMethod,
+        $returnURL,
+        $authorize,
+        $capture
+    ) {
         $this->setMerchant($merchant);
         $this->setHolder($holder);
         $this->setOrder($order);
@@ -265,7 +266,9 @@ class Transaction
     public function setBin($bin)
     {
         if (!is_numeric($bin) || strlen($bin) != 6) {
-            throw new \UnexpectedValueException('O campo bin deve ser informado com os 6 primeiros dígitos do número do cartão');
+            throw new \UnexpectedValueException(
+                'O campo bin deve ser informado com os 6 primeiros dígitos do número do cartão'
+            );
         }
 
         $this->bin = $bin;
