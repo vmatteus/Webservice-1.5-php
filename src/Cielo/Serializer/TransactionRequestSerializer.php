@@ -52,7 +52,7 @@ class TransactionRequestSerializer extends RequestSerializer
         $requisicaoTransacao->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'capturar', $transaction->getCapture() ? 'true':'false'));
         $requisicaoTransacao->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'campo-livre', $transaction->getFreeField()));
 
-        if (($bin = $transaction->getBin()) !== null) {
+        if ($transaction->getBin() !== null) {
             $requisicaoTransacao->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'bin', $transaction->getBin()));
         }
 

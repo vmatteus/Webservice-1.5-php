@@ -39,9 +39,9 @@ class Cielo
     ) {
         if (func_num_args() == 1) {
             return new Holder($tokenOrNumber);
-        } else {
-            return new Holder($tokenOrNumber, $expirationYear, $expirationMonth, $indicator, $cvv);
         }
+
+        return new Holder($tokenOrNumber, $expirationYear, $expirationMonth, $indicator, $cvv);
     }
 
     public function merchant($id, $key)
