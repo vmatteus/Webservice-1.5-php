@@ -32,9 +32,9 @@ abstract class RequestSerializer
     {
         $merchant = $transaction->getMerchant();
 
-        $dadosEc = $document->createElementNS(TransactionRequestSerializer::NS, 'dados-ec');
-        $numero = $document->createElementNS(TransactionRequestSerializer::NS, 'numero', $merchant->getAffiliationId());
-        $chave = $document->createElementNS(TransactionRequestSerializer::NS, 'chave', $merchant->getAffiliationKey());
+        $dadosEc = $document->createElementNS(self::NS, 'dados-ec');
+        $numero = $document->createElementNS(self::NS, 'numero', $merchant->getAffiliationId());
+        $chave = $document->createElementNS(self::NS, 'chave', $merchant->getAffiliationKey());
 
         $dadosEc->appendChild($numero);
         $dadosEc->appendChild($chave);
