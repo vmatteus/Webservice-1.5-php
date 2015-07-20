@@ -94,4 +94,32 @@ class PaymentMethodTest extends TestCase
 
         $this->assertEquals('06', $this->paymentMethod->getInstallments());
     }
+
+    /**
+     * @return \string[][]
+     */
+    public function provideInvalidProductAndInstallments()
+    {
+        return [
+            [PaymentMethod::CREDITO_A_VISTA, '02'],
+            [PaymentMethod::DEBITO, '06'],
+            [PaymentMethod::PARCELADO_LOJA, '001'],
+            [PaymentMethod::PARCELADO_LOJA, '0']
+        ];
+    }
+
+    /**
+     * @test
+     * @param string $product
+     * @param string $installments
+     * @dataProvider provideInvalidProductAndInstallments
+     */
+    public function setInstallmentsThrowsUnexpectedValue($product, $installments)
+    {
+        $this->setExpectedException(\UnexpectedValueException::class);
+
+        $this->paymentMethod->setProduct($product);
+
+        $this->paymentMethod->setInstallments($installments);
+    }
 }
