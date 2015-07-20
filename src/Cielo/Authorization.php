@@ -5,7 +5,7 @@ namespace Cielo;
 class Authorization
 {
     /**
-     * @var integer
+     * @var int
      */
     private $code;
 
@@ -20,22 +20,22 @@ class Authorization
     private $dateTime;
 
     /**
-     * @var integer
+     * @var int
      */
     private $total;
 
     /**
-     * @var integer
+     * @var int
      */
     private $lr;
 
     /**
-     * @var integer
+     * @var int
      */
     private $arp;
 
     /**
-     * @var integer
+     * @var int
      */
     private $nsu;
 
