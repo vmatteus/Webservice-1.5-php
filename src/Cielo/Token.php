@@ -1,4 +1,5 @@
 <?php
+
 namespace Cielo;
 
 class Token
@@ -18,11 +19,18 @@ class Token
      */
     private $numero;
 
+    /**
+     * @return string
+     */
     public function getCode()
     {
         return $this->code;
     }
 
+    /**
+     * @param  string $code
+     * @return $this
+     */
     public function setCode($code)
     {
         $this->code = $code;
@@ -30,23 +38,37 @@ class Token
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getStatus()
     {
         return $this->status;
     }
 
+    /**
+     * @param  int $status
+     * @return $this
+     */
     public function setStatus($status)
     {
-        $this->status = $status;
+        $this->status = (int) $status;
 
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getNumero()
     {
         return $this->numero;
     }
 
+    /**
+     * @param  string $numero
+     * @return $this
+     */
     public function setNumero($numero)
     {
         $this->numero = $numero;

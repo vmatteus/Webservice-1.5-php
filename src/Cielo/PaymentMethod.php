@@ -1,4 +1,5 @@
 <?php
+
 namespace Cielo;
 
 class PaymentMethod
@@ -20,6 +21,11 @@ class PaymentMethod
     private $product;
     private $installments;
 
+    /**
+     * @param string $issuer
+     * @param int    $product
+     * @param int    $installments
+     */
     public function __construct($issuer, $product = PaymentMethod::CREDITO_A_VISTA, $installments = 1)
     {
         $this->setIssuer($issuer);
@@ -27,61 +33,91 @@ class PaymentMethod
         $this->setInstallments($installments);
     }
 
+    /**
+     * @return mixed
+     */
     public function getIssuer()
     {
         return $this->issuer;
     }
 
+    /**
+     * @return mixed
+     */
     public function getProduct()
     {
         return $this->product;
     }
 
+    /**
+     * @return mixed
+     */
     public function getInstallments()
     {
         return $this->installments;
     }
 
+    /**
+     * @param  string $issuer
+     * @throws \UnexpectedValueException se a bandeira do cartão for inválida
+     */
     public function setIssuer($issuer)
     {
-        switch ($issuer) {
-            case PaymentMethod::VISA:
-            case PaymentMethod::MASTERCARD:
-            case PaymentMethod::DINERS:
-            case PaymentMethod::DISCOVER:
-            case PaymentMethod::ELO:
-            case PaymentMethod::AMEX:
-            case PaymentMethod::JCB:
-            case PaymentMethod::AURA:
-                $this->issuer = $issuer;
-                break;
-            default:
-                throw new \UnexpectedValueException(
-                    'O nome da bandeira deve ser uma string em minúsculo: visa, ' .
-                    'mastercard, diners, discover, elo, amex, jcb e aura'
-                );
+        $allowedIssuers = [
+            PaymentMethod::VISA,
+            PaymentMethod::MASTERCARD,
+            PaymentMethod::DINERS,
+            PaymentMethod::DISCOVER,
+            PaymentMethod::ELO,
+            PaymentMethod::AMEX,
+            PaymentMethod::JCB,
+            PaymentMethod::AURA,
+        ];
+
+        if (! in_array($issuer, $allowedIssuers, true)) {
+            throw new \UnexpectedValueException(
+                'O nome da bandeira deve ser uma string em minúsculo: visa, ' .
+                'mastercard, diners, discover, elo, amex, jcb e aura'
+            );
         }
+
+        $this->issuer = $issuer;
     }
 
+    /**
+     * @param  string|int $product
+     * @throws \UnexpectedValueException se o `produto` for inválido
+     */
     public function setProduct($product)
     {
-        switch ($product) {
-            case PaymentMethod::CREDITO_A_VISTA:
-            case PaymentMethod::DEBITO:
-                $this->installments = 1;
-                break;
+        $isAllowedProduct = (
+            $product === PaymentMethod::CREDITO_A_VISTA ||
+            $product === PaymentMethod::DEBITO ||
+            $product === PaymentMethod::PARCELADO_LOJA
+        );
 
-            case PaymentMethod::PARCELADO_LOJA:
-                $this->product = $product;
-                break;
-
-            default:
-                throw new \UnexpectedValueException(
-                    'Produto inválido. Utilize 1 – Crédito à Vista, 2 – Parcelado loja ou A – Débito.'
-                );
+        if (! $isAllowedProduct) {
+            throw new \UnexpectedValueException(
+                'Produto inválido. Utilize 1 – Crédito à Vista, 2 – Parcelado loja ou A – Débito.'
+            );
         }
+
+        if ($product === PaymentMethod::CREDITO_A_VISTA || $product === PaymentMethod::DEBITO) {
+            $this->installments = 1;
+        }
+
+        $this->product = $product;
     }
 
+    /**
+     * @param string $installments
+     *
+     * @throws \UnexpectedValueException se a forma de pagamento for débito ou
+     * crédito à vista e o número de parcelas for diferente de 1
+     *
+     * @throws \UnexpectedValueException se o número de parcelas for menor que 1
+     * ou o número de parcelas não estiver com 2 dígitos
+     */
     public function setInstallments($installments)
     {
         $isOneTimePayment = (

@@ -1,4 +1,5 @@
 <?php
+
 namespace Cielo\Serializer;
 
 use Cielo\Authentication;
@@ -23,11 +24,19 @@ class TransactionResponseUnserializer
      */
     private $xpath;
 
+    /**
+     * @param Transaction $transaction
+     */
     public function __construct(Transaction $transaction)
     {
         $this->transaction = $transaction;
     }
 
+    /**
+     * @param  string $xml
+     * @return Transaction
+     * @throws CieloException se houver alguma mensagem de erro envolvida no XML
+     */
     public function unserialize($xml)
     {
         $document = new DOMDocument('1.0', 'utf-8');
@@ -53,6 +62,10 @@ class TransactionResponseUnserializer
         return $this->transaction;
     }
 
+    /**
+     * @param  string $query
+     * @return string
+     */
     private function getValue($query)
     {
         $node = $this->xpath->query($query)->item(0);
@@ -62,6 +75,9 @@ class TransactionResponseUnserializer
         }
     }
 
+    /**
+     * @param Transaction $transaction
+     */
     private function readTransacao(Transaction $transaction)
     {
         $transaction->setTid($this->getValue('//c:transacao/c:tid'));
@@ -70,6 +86,9 @@ class TransactionResponseUnserializer
         $transaction->setAuthenticationURL($this->getValue('//c:transacao/c:url-autenticacao'));
     }
 
+    /**
+     * @param Transaction $transaction
+     */
     private function readDadosPedido(Transaction $transaction)
     {
         $order = $transaction->getOrder();
@@ -83,6 +102,9 @@ class TransactionResponseUnserializer
         $order->setShipping((int) $this->getValue('//c:transacao/c:dados-pedido/c:taxa-embarque'));
     }
 
+    /**
+     * @param Transaction $transaction
+     */
     private function readFormaPagamento(Transaction $transaction)
     {
         $paymentMethod = $transaction->getPaymentMethod();
@@ -92,6 +114,9 @@ class TransactionResponseUnserializer
         $paymentMethod->setInstallments((int) $this->getValue('//c:transacao/c:forma-pagamento/c:parcelas'));
     }
 
+    /**
+     * @param Transaction $transaction
+     */
     private function readAutenticacao(Transaction $transaction)
     {
         $authentication = new Authentication();
@@ -105,6 +130,9 @@ class TransactionResponseUnserializer
         $transaction->setAuthentication($authentication);
     }
 
+    /**
+     * @param Transaction $transaction
+     */
     private function readAutorizacao(Transaction $transaction)
     {
         $authorization = new Authorization();
@@ -120,6 +148,9 @@ class TransactionResponseUnserializer
         $transaction->setAuthorization($authorization);
     }
 
+    /**
+     * @param Transaction $transaction
+     */
     private function readToken(Transaction $transaction)
     {
         $token = new Token();

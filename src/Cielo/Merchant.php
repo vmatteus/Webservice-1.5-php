@@ -1,10 +1,11 @@
 <?php
+
 namespace Cielo;
 
 class Merchant
 {
     /**
-     * @var integer
+     * @var string
      */
     private $affiliationId;
 
@@ -13,22 +14,37 @@ class Merchant
      */
     private $affiliationKey;
 
+    /**
+     * @param string $id
+     * @param string $key
+     */
     public function __construct($id, $key)
     {
-        $this->setAffiliationId($id);
-        $this->setAffiliationKey($key);
+        $this->setAffiliationId((string) $id);
+        $this->setAffiliationKey((string) $key);
     }
 
+    /**
+     * @return string
+     */
     public function getAffiliationId()
     {
         return $this->affiliationId;
     }
 
+    /**
+     * @return string
+     */
     public function getAffiliationKey()
     {
         return $this->affiliationKey;
     }
 
+    /**
+     * @param  string $id
+     * @throws \UnexpectedValueException se o número de afiliação não for númerico
+     * ou não conter de 1 à 20 caracteres
+     */
     public function setAffiliationId($id)
     {
         if (!is_numeric($id) || strlen($id) < 1 || strlen($id) > 20) {
@@ -40,6 +56,11 @@ class Merchant
         $this->affiliationId = $id;
     }
 
+    /**
+     * @param  string $key
+     * @throws \UnexpectedValueException se a chave de afiliação não for do tipo
+     * `string` ou não conter de 1 à 100 caracteres
+     */
     public function setAffiliationKey($key)
     {
         if (!is_string($key) || strlen($key) < 1 || strlen($key) > 100) {

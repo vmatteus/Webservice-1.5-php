@@ -1,4 +1,5 @@
 <?php
+
 namespace Cielo\Serializer;
 
 use Cielo\Transaction;
@@ -6,12 +7,17 @@ use DOMDocument;
 
 class TransactionRequestSerializer extends RequestSerializer
 {
+    /**
+     * {@inheritDoc}
+     */
     public function serialize(Transaction $transaction)
     {
         libxml_use_internal_errors(true);
+
         $document = new DOMDocument('1.0', 'utf-8');
 
         $requisicaoTransacao = $this->createRequisicaoTransacao($transaction, $document);
+
         $document->appendChild($requisicaoTransacao);
 
         if (is_file('ecommerce.xsd') && is_readable('ecommerce.xsd')) {
@@ -36,87 +42,121 @@ class TransactionRequestSerializer extends RequestSerializer
         return $document->saveXML();
     }
 
+    /**
+     * @param \DOMElement $root
+     * @param string      $name
+     * @param string      $value
+     * @param string      $namespace
+     */
+    private function createElementAndAppendWithNs(\DOMElement $root, $name, $value, $namespace = self::NS)
+    {
+        $root->appendChild(new \DOMElement($name, $value, $namespace));
+    }
+
+    /**
+     * @param  Transaction $transaction
+     * @param  DOMDocument $document
+     * @return \DOMElement
+     */
     private function createRequisicaoTransacao(Transaction $transaction, DOMDocument $document)
     {
-        $requisicaoTransacao = $document->createElementNS(RequestSerializer::NS, 'requisicao-transacao');
-        $requisicaoTransacao->setAttribute('id', $transaction->getOrder()->getNumber());
-        $requisicaoTransacao->setAttribute('versao', RequestSerializer::VERSION);
+        $requisicao = $document->createElementNS(self::NS, 'requisicao-transacao');
 
-        $requisicaoTransacao->appendChild($this->createDadosEc($transaction, $document));
-        $requisicaoTransacao->appendChild($this->createDadosPortador($transaction, $document));
-        $requisicaoTransacao->appendChild($this->createDadosPedido($transaction, $document));
-        $requisicaoTransacao->appendChild($this->createFormaPagamento($transaction, $document));
+        $requisicao->setAttribute('id', $transaction->getOrder()->getNumber());
+        $requisicao->setAttribute('versao', RequestSerializer::VERSION);
 
-        $requisicaoTransacao->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'url-retorno', $transaction->getReturnURL()));
-        $requisicaoTransacao->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'autorizar', $transaction->getAuthorize()));
-        $requisicaoTransacao->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'capturar', $transaction->getCapture() ? 'true':'false'));
-        $requisicaoTransacao->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'campo-livre', $transaction->getFreeField()));
+        $requisicao->appendChild($this->createDadosEc($transaction, $document));
+        $requisicao->appendChild($this->createDadosPortador($transaction, $document));
+        $requisicao->appendChild($this->createDadosPedido($transaction, $document));
+        $requisicao->appendChild($this->createFormaPagamento($transaction, $document));
+
+        $this->createElementAndAppendWithNs($requisicao, 'url-retorno', $transaction->getReturnURL());
+        $this->createElementAndAppendWithNs($requisicao, 'autorizar', $transaction->getAuthorize());
+        $this->createElementAndAppendWithNs($requisicao, 'capturar', $transaction->getCapture() ? 'true' : 'false');
+        $this->createElementAndAppendWithNs($requisicao, 'campo-livre', $transaction->getFreeField());
 
         if ($transaction->getBin() !== null) {
-            $requisicaoTransacao->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'bin', $transaction->getBin()));
+            $this->createElementAndAppendWithNs($requisicao, 'bin', $transaction->getBin());
         }
 
-        $requisicaoTransacao->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'gerar-token', $transaction->getGenerateToken() ? 'true':'false'));
+        $this->createElementAndAppendWithNs(
+            $requisicao,
+            'gerar-token',
+            $transaction->getGenerateToken() ? 'true' : 'false'
+        );
 
         $avsXML = $transaction->getAvs();
 
-        if (!empty($avsXML)) {
-            $avs = $document->createElementNS(TransactionRequestSerializer::NS, 'avs');
+        if (! empty($avsXML)) {
+            $avs = $document->createElementNS(self::NS, 'avs');
+
             $avs->appendChild($document->createCDATASection($avsXML));
 
-            $requisicaoTransacao->appendChild($avs);
+            $requisicao->appendChild($avs);
         }
 
-        return $requisicaoTransacao;
+        return $requisicao;
     }
 
+    /**
+     * @param  Transaction $transaction
+     * @param  DOMDocument $document
+     * @return \DOMElement
+     */
     private function createDadosPortador(Transaction $transaction, DOMDocument $document)
     {
         $holder = $transaction->getHolder();
+
         $token = $holder->getToken();
 
-        $dadosPortador = $document->createElementNS(TransactionRequestSerializer::NS, 'dados-portador');
+        $dadosPortador = $document->createElementNS(self::NS, 'dados-portador');
 
-        if (empty($token)) {
-            $dadosPortador->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'numero', $holder->getCreditCardNumber()));
-            $dadosPortador->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'validade', $holder->getExpiration()));
-            $dadosPortador->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'indicador', $holder->getCVVIndicator()));
-            $dadosPortador->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'codigo-seguranca', $holder->getCVV()));
-            $dadosPortador->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'token'));
-        } else {
-            $dadosPortador->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'token', $token));
-        }
+        $this->createElementAndAppendWithNs($dadosPortador, 'numero', $holder->getCreditCardNumber());
+        $this->createElementAndAppendWithNs($dadosPortador, 'validade', $holder->getExpiration());
+        $this->createElementAndAppendWithNs($dadosPortador, 'indicador', $holder->getCVVIndicator());
+        $this->createElementAndAppendWithNs($dadosPortador, 'codigo-seguranca', $holder->getCVV());
+        $this->createElementAndAppendWithNs($dadosPortador, 'token', empty($token) ? null : $token);
 
         return $dadosPortador;
     }
 
+    /**
+     * @param  Transaction $transaction
+     * @param  DOMDocument $document
+     * @return \DOMElement
+     */
     private function createDadosPedido(Transaction $transaction, DOMDocument $document)
     {
         $order = $transaction->getOrder();
 
-        $dadosPedido = $document->createElementNS(TransactionRequestSerializer::NS, 'dados-pedido');
+        $dadosPedido = $document->createElementNS(self::NS, 'dados-pedido');
 
-        $dadosPedido->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'numero', $order->getNumber()));
-        $dadosPedido->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'valor', $order->getTotal()));
-        $dadosPedido->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'moeda', $order->getCurrency()));
-        $dadosPedido->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'data-hora', $order->getDateTime()));
-        $dadosPedido->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'descricao', $order->getDescription()));
-        $dadosPedido->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'idioma', $order->getLanguage()));
-        $dadosPedido->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'taxa-embarque', (int) $order->getShipping()));
-        $dadosPedido->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'soft-descriptor', $order->getSoftDescriptor()));
+        $this->createElementAndAppendWithNs($dadosPedido, 'numero', $order->getNumber());
+        $this->createElementAndAppendWithNs($dadosPedido, 'valor', $order->getTotal());
+        $this->createElementAndAppendWithNs($dadosPedido, 'moeda', $order->getCurrency());
+        $this->createElementAndAppendWithNs($dadosPedido, 'data-hora', $order->getDateTime());
+        $this->createElementAndAppendWithNs($dadosPedido, 'descricao', $order->getDescription());
+        $this->createElementAndAppendWithNs($dadosPedido, 'idioma', $order->getLanguage());
+        $this->createElementAndAppendWithNs($dadosPedido, 'taxa-embarque', (int) $order->getShipping());
+        $this->createElementAndAppendWithNs($dadosPedido, 'soft-descriptor', $order->getSoftDescriptor());
 
         return $dadosPedido;
     }
 
+    /**
+     * @param  Transaction $transaction
+     * @param  DOMDocument $document
+     * @return \DOMElement
+     */
     private function createFormaPagamento(Transaction $transaction, DOMDocument $document)
     {
         $paymentMethod = $transaction->getPaymentMethod();
 
-        $formaPagamento = $document->createElementNS(TransactionRequestSerializer::NS, 'forma-pagamento');
+        $formaPagamento = $document->createElementNS(self::NS, 'forma-pagamento');
 
-        $formaPagamento->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'bandeira', $paymentMethod->getIssuer()));
-        $formaPagamento->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'produto', $paymentMethod->getProduct()));
-        $formaPagamento->appendChild($document->createElementNS(TransactionRequestSerializer::NS, 'parcelas', $paymentMethod->getInstallments()));
+        $this->createElementAndAppendWithNs($formaPagamento, 'bandeira', $paymentMethod->getIssuer());
+        $this->createElementAndAppendWithNs($formaPagamento, 'produto', $paymentMethod->getProduct());
+        $this->createElementAndAppendWithNs($formaPagamento, 'parcelas', $paymentMethod->getInstallments());
 
         return $formaPagamento;
     }

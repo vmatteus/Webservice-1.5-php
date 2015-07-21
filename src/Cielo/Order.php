@@ -1,4 +1,5 @@
 <?php
+
 namespace Cielo;
 
 class Order
@@ -43,57 +44,92 @@ class Order
      */
     private $softDescriptor;
 
+    /**
+     * @param string      $number
+     * @param int         $total
+     * @param int         $currency
+     * @param null|string $dateTime
+     */
     public function __construct($number, $total, $currency = 986, $dateTime = null)
     {
         $this->setNumber($number);
         $this->setTotal($total);
         $this->setCurrency($currency);
 
-        if ($dateTime == null) {
+        if ($dateTime === null) {
             $this->setDateTime(@date('Y-m-d\TH:i:s'));
         }
     }
 
+    /**
+     * @return string
+     */
     public function getNumber()
     {
         return $this->number;
     }
 
+    /**
+     * @return int
+     */
     public function getTotal()
     {
         return $this->total;
     }
 
+    /**
+     * @return int
+     */
     public function getCurrency()
     {
         return $this->currency;
     }
 
+    /**
+     * @return string
+     */
     public function getDateTime()
     {
         return $this->dateTime;
     }
 
+    /**
+     * @return string
+     */
     public function getDescription()
     {
         return $this->description;
     }
 
+    /**
+     * @return string
+     */
     public function getLanguage()
     {
         return $this->language;
     }
 
+    /**
+     * @return string
+     */
     public function getSoftDescriptor()
     {
         return $this->softDescriptor;
     }
 
+    /**
+     * @return int
+     */
     public function getShipping()
     {
         return $this->shipping;
     }
 
+    /**
+     * @param  string $number
+     * @throws \UnexpectedValueException se o número do pedido não estiver de 1
+     * à 20 caracteres
+     */
     public function setNumber($number)
     {
         if (strlen($number) < 1 || strlen($number) > 20) {
@@ -103,6 +139,10 @@ class Order
         $this->number = $number;
     }
 
+    /**
+     * @param  int $total
+     * @throws \UnexpectedValueException se o valor total do pedido não for inteiro
+     */
     public function setTotal($total)
     {
         if (!is_int($total)) {
@@ -115,6 +155,11 @@ class Order
         $this->total = $total;
     }
 
+    /**
+     * @param  int $currency
+     * @throws \UnexpectedValueException se a moeda informada não estiver enumerada
+     * na especificação ISO 4217
+     */
     public function setCurrency($currency)
     {
         if (!is_int($currency)) {
@@ -124,6 +169,11 @@ class Order
         $this->currency = $currency;
     }
 
+    /**
+     * @param  string $dateTime
+     * @throws \UnexpectedValueException se a data informada `$dateTime` não estiver
+     * no formato `aaaa-MM-ddTHH:mm:ss`
+     */
     public function setDateTime($dateTime)
     {
         $expr = '/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{3}-?[0-9]{2}:[0-9]{2})?$/';
@@ -135,6 +185,11 @@ class Order
         $this->dateTime = $dateTime;
     }
 
+    /**
+     * @param  string $description
+     * @throws \UnexpectedValueException se a descrição `$description` exceder
+     * 1024 caracteres
+     */
     public function setDescription($description)
     {
         if (strlen($description) > 1024) {
@@ -144,21 +199,31 @@ class Order
         $this->description = $description;
     }
 
+    /**
+     * @param  string $language
+     * @throws \UnexpectedValueException se o idioma informado não for aceito
+     * (o mesmo deve ser `PT`, `EN` ou `ES`)
+     */
     public function setLanguage($language)
     {
-        switch ($language) {
-            case 'PT':
-            case 'EN':
-            case 'ES':
-                $this->language = $language;
-                break;
-            default:
-                throw new \UnexpectedValueException(
-                    'O idioma deve ser informado como PT (português), EN (inglês) ou ES (espanhol)'
-                );
+        $language = strtoupper($language);
+
+        $allowedLanguages = ['PT', 'EN', 'ES'];
+
+        if (! in_array($language, $allowedLanguages, true)) {
+            throw new \UnexpectedValueException(
+                'O idioma deve ser informado como PT (português), EN (inglês) ou ES (espanhol)'
+            );
         }
+
+        $this->language = $language;
     }
 
+    /**
+     * @param  int $shipping
+     * @throws \UnexpectedValueException se o valor da autorização da taxa de
+     * embarque não for inteiro
+     */
     public function setShipping($shipping)
     {
         if (!is_int($shipping)) {
@@ -170,6 +235,10 @@ class Order
         $this->shipping = $shipping;
     }
 
+    /**
+     * @param  string $softDescriptor
+     * @throws \UnexpectedValueException se `softDescriptor` exceder 13 caracteres
+     */
     public function setSoftDescriptor($softDescriptor)
     {
         if (strlen($softDescriptor) > 13) {
