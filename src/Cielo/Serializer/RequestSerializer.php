@@ -21,14 +21,14 @@ abstract class RequestSerializer
      * @param  Transaction $transaction
      * @return string
      */
-    abstract public function serialize(Transaction $transaction);
+    abstract public function serialize($transaction);
 
     /**
      * @param  Transaction $transaction
      * @param  DOMDocument $document
      * @return \DOMElement
      */
-    protected function createDadosEc(Transaction $transaction, DOMDocument $document)
+    protected function createDadosEc($transaction, DOMDocument $document)
     {
         $merchant = $transaction->getMerchant();
 
