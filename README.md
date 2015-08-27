@@ -56,7 +56,7 @@ $transaction = $cielo->transaction($holder,
 
 ```
 
-## EXEMPLO DE CONSULTA DA TRANSAÇÃO ATRAVÉS DO TID
+## EXEMPLO DE CONSULTA
 
 ```php
 <?php
