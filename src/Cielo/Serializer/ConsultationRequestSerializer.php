@@ -35,8 +35,8 @@ class ConsultationRequestSerializer extends RequestSerializer
         libxml_clear_errors();
 
         if ($count) {
-            echo $document->saveXML();
-            throw $exception;
+            //echo $document->saveXML();
+            //throw $exception;
         }
 
         return $document->saveXML();
@@ -65,9 +65,9 @@ class ConsultationRequestSerializer extends RequestSerializer
         $requisicao->setAttribute('id', $transaction->getConsultationId());
         $requisicao->setAttribute('versao', RequestSerializer::VERSION);
 
-        $requisicao->appendChild($this->createDadosEc($transaction, $document));
-
         $this->createElementAndAppendWithNs($requisicao, 'tid', $transaction->tid);
+
+        $requisicao->appendChild($this->createDadosEc($transaction, $document));
 
         return $requisicao;
     }

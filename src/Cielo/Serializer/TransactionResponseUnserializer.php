@@ -7,6 +7,7 @@ use Cielo\Authorization;
 use Cielo\CieloException;
 use Cielo\Token;
 use Cielo\Transaction;
+use Cielo\Consultation;
 use DOMDocument;
 use DOMXPath;
 
@@ -27,7 +28,7 @@ class TransactionResponseUnserializer
     /**
      * @param Transaction $transaction
      */
-    public function __construct(Transaction $transaction)
+    public function __construct($transaction)
     {
         $this->transaction = $transaction;
     }
@@ -78,7 +79,7 @@ class TransactionResponseUnserializer
     /**
      * @param Transaction $transaction
      */
-    private function readTransacao(Transaction $transaction)
+    private function readTransacao($transaction)
     {
         $transaction->setTid($this->getValue('//c:transacao/c:tid'));
         $transaction->setPan($this->getValue('//c:transacao/c:pan'));
@@ -89,7 +90,7 @@ class TransactionResponseUnserializer
     /**
      * @param Transaction $transaction
      */
-    private function readDadosPedido(Transaction $transaction)
+    private function readDadosPedido($transaction)
     {
         $order = $transaction->getOrder();
 
@@ -105,7 +106,7 @@ class TransactionResponseUnserializer
     /**
      * @param Transaction $transaction
      */
-    private function readFormaPagamento(Transaction $transaction)
+    private function readFormaPagamento($transaction)
     {
         $paymentMethod = $transaction->getPaymentMethod();
 
@@ -117,7 +118,7 @@ class TransactionResponseUnserializer
     /**
      * @param Transaction $transaction
      */
-    private function readAutenticacao(Transaction $transaction)
+    private function readAutenticacao($transaction)
     {
         $authentication = new Authentication();
 
@@ -133,7 +134,7 @@ class TransactionResponseUnserializer
     /**
      * @param Transaction $transaction
      */
-    private function readAutorizacao(Transaction $transaction)
+    private function readAutorizacao($transaction)
     {
         $authorization = new Authorization();
 
@@ -151,7 +152,7 @@ class TransactionResponseUnserializer
     /**
      * @param Transaction $transaction
      */
-    private function readToken(Transaction $transaction)
+    private function readToken($transaction)
     {
         $token = new Token();
 

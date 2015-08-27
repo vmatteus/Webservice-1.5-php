@@ -187,15 +187,14 @@ class Cielo
     }
 
      /**
-     * @param  Transaction $transaction
-     * @return Transaction
+     * @param  Consultation $transaction
+     * @return Consultation
      * @throws CieloException se algum erro ocorrer na requisição pela transação
      */
     public function consultationRequest(Consultation $transaction)
     {
-        $serializer = new ConsultationRequestSerializer();
 
-        return $serializer->serialize($transaction);
+        $serializer = new ConsultationRequestSerializer();
 
         $response = $this->sendHttpRequest($serializer->serialize($transaction));
 

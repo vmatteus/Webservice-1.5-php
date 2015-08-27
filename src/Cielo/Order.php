@@ -50,7 +50,7 @@ class Order
      * @param int         $currency
      * @param null|string $dateTime
      */
-    public function __construct($number, $total, $currency = 986, $dateTime = null)
+    public function __construct($number = 0, $total = 0, $currency = 986, $dateTime = null)
     {
         $this->setNumber($number);
         $this->setTotal($total);
