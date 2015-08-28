@@ -71,8 +71,8 @@ function __autoload($class_name) {
     require_once $class_name . '.php';
 }
 
-$mid = '1006993069'; //seu merchant id
-$key = '25fbb99741c739dd84d7b06ec78c9bac718838630f30b112d033ce2e621b34f3'; //sua chave
+$mid = '12345678'; //seu merchant id
+$key = 'xxxx'; //sua chave
 
 $cielo = new Cielo($mid, $key, Cielo::TEST);
 
