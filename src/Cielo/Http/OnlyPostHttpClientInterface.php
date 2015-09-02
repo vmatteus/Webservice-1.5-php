@@ -13,5 +13,5 @@ interface OnlyPostHttpClientInterface
      * @param  \string[] $headers
      * @return string
      */
-    public function __invoke($url, array $headers = [], array $fields);
+    public function __invoke($url, array $headers = [], array $fields = []);
 }
