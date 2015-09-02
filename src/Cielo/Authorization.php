@@ -7,17 +7,17 @@ class Authorization
     /**
      * @var int
      */
-    public $code;
+    private $code;
 
     /**
      * @var string
      */
-    public $message;
+    private $message;
 
     /**
      * @var string
      */
-    public $dateTime;
+    private $dateTime;
 
     /**
      * @var int

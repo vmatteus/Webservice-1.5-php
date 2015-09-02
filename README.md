@@ -87,9 +87,9 @@ $consultation = $cielo->Consultation('10069930693EF9D81001'); //tid da transaÃ§Ã
           printf("TID=%s\n", $consultationResponse->getTid());
           printf("STATUS=%s\n", $consultationResponse->getStatus());
           printf("PAN=%s\n", $consultationResponse->getPan());
-          printf("AUTORIZATION CODE=%s\n", $consultationResponse->getAuthorization()->code);
-          printf("AUTORIZATION MESSAGE=%s\n", $consultationResponse->getAuthorization()->message);
-          printf("AUTORIZATION DATE=%s\n", $consultationResponse ->getAuthorization()->dateTime);
+          printf("AUTORIZATION CODE=%s\n", $consultationResponse->getAuthorization()->getCode());
+          printf("AUTORIZATION MESSAGE=%s\n", $consultationResponse->getAuthorization()->getMessage());
+          printf("AUTORIZATION DATE=%s\n", $consultationResponse ->getAuthorization()->getDateTime());
 
         }
           
