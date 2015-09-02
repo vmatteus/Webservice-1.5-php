@@ -92,9 +92,9 @@ class PaymentMethod
     public function setProduct($product)
     {
         $isAllowedProduct = (
-            $product === PaymentMethod::CREDITO_A_VISTA ||
-            $product === PaymentMethod::DEBITO ||
-            $product === PaymentMethod::PARCELADO_LOJA
+            $product == PaymentMethod::CREDITO_A_VISTA ||
+            $product == PaymentMethod::DEBITO ||
+            $product == PaymentMethod::PARCELADO_LOJA
         );
 
         if (! $isAllowedProduct) {

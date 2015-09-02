@@ -111,7 +111,7 @@ class TransactionResponseUnserializer
         $paymentMethod = $transaction->getPaymentMethod();
 
         $paymentMethod->setIssuer($this->getValue('//c:transacao/c:forma-pagamento/c:bandeira'));
-        $paymentMethod->setProduct((int) $this->getValue('//c:transacao/c:forma-pagamento/c:produto'));
+        $paymentMethod->setProduct($this->getValue('//c:transacao/c:forma-pagamento/c:produto'));
         $paymentMethod->setInstallments((int) $this->getValue('//c:transacao/c:forma-pagamento/c:parcelas'));
     }
 
