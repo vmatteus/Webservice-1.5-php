@@ -99,7 +99,7 @@ class PaymentMethod
 
         if (! $isAllowedProduct) {
             throw new \UnexpectedValueException(
-                'Produto inválido. Utilize 1 – Crédito à Vista, 2 – Parcelado loja ou A – Débito.'
+                'O produto é inválido. Utilize 1 – Crédito à Vista, 2 – Parcelado loja ou A – Débito.'
             );
         }
 
