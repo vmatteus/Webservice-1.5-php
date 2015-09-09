@@ -8,6 +8,8 @@ use Cielo\Serializer\AuthorizationRequestSerializer;
 use Cielo\Serializer\TransactionRequestSerializer;
 use Cielo\Serializer\TransactionResponseUnserializer;
 use Cielo\Serializer\ConsultationRequestSerializer;
+use Cielo\Serializer\CancellationRequestSerializer;
+use Cielo\Serializer\CaptureRequestSerializer;
 
 class Cielo
 {
@@ -98,6 +100,24 @@ class Cielo
     public function consultation($tid = null)
     {
         return new Consultation($this->merchant, $tid);
+    }
+
+    /**
+     * @param  string      $tidOrOrderNumber
+     * @return Cancellation
+     */
+    public function cancellation($tid = null)
+    {
+        return new Cancellation($this->merchant, $tid);
+    }
+
+    /**
+     * @param  string      $tidOrOrderNumber
+     * @return Capture
+     */
+    public function capture($tid = null)
+    {
+        return new Capture($this->merchant, $tid);
     }
 
     /**
@@ -195,6 +215,40 @@ class Cielo
     {
 
         $serializer = new ConsultationRequestSerializer();
+
+        $response = $this->sendHttpRequest($serializer->serialize($transaction));
+
+        $unserializer = new TransactionResponseUnserializer($transaction);
+
+        return $unserializer->unserialize($response);
+    }
+
+    /**
+     * @param  Cancellation $transaction
+     * @return Cancellation
+     * @throws CieloException se algum erro ocorrer na requisição pela transação
+     */
+    public function cancellationRequest(Cancellation $transaction)
+    {
+
+        $serializer = new CancellationRequestSerializer();
+
+        $response = $this->sendHttpRequest($serializer->serialize($transaction));
+
+        $unserializer = new TransactionResponseUnserializer($transaction);
+
+        return $unserializer->unserialize($response);
+    }
+
+   /**
+     * @param  Capture $transaction
+     * @return Capture
+     * @throws CieloException se algum erro ocorrer na requisição pela transação
+     */
+    public function captureRequest(Capture $transaction)
+    {
+
+        $serializer = new CaptureRequestSerializer();
 
         $response = $this->sendHttpRequest($serializer->serialize($transaction));
 

@@ -2,7 +2,7 @@
 
 namespace Cielo;
 
-Class Consultation {
+Class Cancellation {
 
 	/**
 	 * @var string
@@ -145,7 +145,7 @@ Class Consultation {
     }
 
     /**
-     * @param Authorization $authorization
+     * @param CaptureInformation $captureInformation
      */
     public function setCaptureInformation(CaptureInformation $captureInformation)
     {
@@ -171,7 +171,7 @@ Class Consultation {
 	/**
      * @return Consultation Id
      */
-	public function getConsultationId()
+	public function getCancellationId()
 	{
 		return md5(date("YmdHisu"));
 	}
@@ -230,6 +230,22 @@ Class Consultation {
     public function getAuthorization()
     {
         return $this->authorization;
+    }
+
+    /**
+     * @return CaptureInformation
+     */
+    public function getCaptureInformation()
+    {
+        return $this->captureInformation;
+    }
+
+    /**
+     * @return CancellationInformation
+     */
+    public function getCancellationInformation()
+    {
+        return $this->cancellationInformation;
     }
 
     

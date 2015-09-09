@@ -67,10 +67,6 @@ use Cielo\Cielo;
 use src\Cielo\CieloException;
 use src\Cielo\Consultation;
 
-function __autoload($class_name) {
-    require_once $class_name . '.php';
-}
-
 $mid = '12345678'; //seu merchant id
 $key = 'xxxx'; //sua chave
 
@@ -87,9 +83,96 @@ $consultation = $cielo->Consultation('10069930693EF9D81001'); //tid da transaç�
           printf("TID=%s\n", $consultationResponse->getTid());
           printf("STATUS=%s\n", $consultationResponse->getStatus());
           printf("PAN=%s\n", $consultationResponse->getPan());
+
           printf("AUTORIZATION CODE=%s\n", $consultationResponse->getAuthorization()->getCode());
           printf("AUTORIZATION MESSAGE=%s\n", $consultationResponse->getAuthorization()->getMessage());
           printf("AUTORIZATION DATE=%s\n", $consultationResponse ->getAuthorization()->getDateTime());
+
+        }
+          
+
+  } catch (CieloException $e) {
+
+      printf("Opz[%d]: %s\n", $e->getCode(), $e->getMessage());
+
+  }
+```
+
+## EXEMPLO DE CAPTURA TOTAL DA TRANSAÇÃO
+
+```php
+<?php
+
+require 'vendor/autoload.php';
+
+use Cielo\Cielo;
+use src\Cielo\CieloException;
+use src\Cielo\Capture;
+
+$mid = '12345678'; //seu merchant id
+$key = 'xxxx'; //sua chave
+
+$cielo = new Cielo($mid, $key, Cielo::TEST);
+
+$capture = $cielo->Capture('10069930693EF9D81001'); //tid da transação
+
+  try {
+
+      $captureResponse = $cielo->captureRequest($capture);
+
+        if (is_object($captureResponse)){
+
+          printf("TID=%s\n", $captureResponse->getTid());
+          printf("STATUS=%s\n", $captureResponse->getStatus());
+          printf("PAN=%s\n", $captureResponse->getPan());
+
+          printf("STATUS CODE=%s\n", $captureResponse->getCaptureInformation()->getCode());
+          printf("CAPTURE MESSAGE=%s\n", $captureResponse->getCaptureInformation()->getMessage());
+          printf("CAPTURE DATE=%s\n", $captureResponse ->getCaptureInformation()->getDateTime());
+          printf("CAPTURED VALUE=%s\n", $captureResponse ->getCaptureInformation()->getValue());
+
+        }
+          
+
+  } catch (CieloException $e) {
+
+      printf("Opz[%d]: %s\n", $e->getCode(), $e->getMessage());
+
+  }
+```
+
+## EXEMPLO DE CANCELAMENTO DA CAPTURA
+
+```php
+<?php
+
+require 'vendor/autoload.php';
+
+use Cielo\Cielo;
+use src\Cielo\CieloException;
+use src\Cielo\Cancellation;
+
+$mid = '12345678'; //seu merchant id
+$key = 'xxxx'; //sua chave
+
+$cielo = new Cielo($mid, $key, Cielo::TEST);
+
+$cancellation = $cielo->Cancellation('10069930693EF9D81001'); //tid da transação
+
+  try {
+
+      $cancellationResponse = $cielo->cancellationRequest($cancellation);
+
+        if (is_object($cancellationResponse)){
+
+          printf("TID=%s\n", $cancellationResponse->getTid());
+          printf("STATUS=%s\n", $cancellationResponse->getStatus());
+          printf("PAN=%s\n", $cancellationResponse->getPan());
+
+          printf("STATUS CODE=%s\n", $cancellationResponse->getCancellationInformation()->getCode());
+          printf("CACELLATION MESSAGE=%s\n", $cancellationResponse->getCancellationInformation()->getMessage());
+          printf("CACELLATION DATE=%s\n", $cancellationResponse ->getCancellationInformation()->getDateTime());
+          printf("CACELLATION VALUE=%s\n", $cancellationResponse->getCancellationInformation()->getValue());
 
         }
           
