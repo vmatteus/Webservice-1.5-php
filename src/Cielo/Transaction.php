@@ -307,6 +307,14 @@ class Transaction
     {
         return $this->avs;
     }
+    
+    /**
+     * @return Token
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
 
     /**
      * @param Merchant $merchant
