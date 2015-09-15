@@ -15,6 +15,7 @@ class PaymentMethod
 
     const CREDITO_A_VISTA = 1;
     const PARCELADO_LOJA = 2;
+    const PARCELADO_ADM = 3;
     const DEBITO = 'A';
 
     private $issuer;
@@ -94,12 +95,13 @@ class PaymentMethod
         $isAllowedProduct = (
             $product == PaymentMethod::CREDITO_A_VISTA ||
             $product == PaymentMethod::DEBITO ||
-            $product == PaymentMethod::PARCELADO_LOJA
+            $product == PaymentMethod::PARCELADO_LOJA ||
+            $product == PaymentMethod::PARCELADO_ADM
         );
 
         if (! $isAllowedProduct) {
             throw new \UnexpectedValueException(
-                'O produto é inválido. Utilize 1 – Crédito à Vista, 2 – Parcelado loja ou A – Débito.'
+                'O produto é inválido. Utilize 1 – Crédito à Vista, 2 – Parcelado loja, 3 - Parcelado Adm, ou A – Débito.'
             );
         }
 
