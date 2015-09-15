@@ -7,6 +7,9 @@ use Cielo\Authorization;
 use Cielo\CieloException;
 use Cielo\Token;
 use Cielo\Transaction;
+use Cielo\Consultation;
+use Cielo\CaptureInformation;
+use Cielo\CancellationInformation;
 use DOMDocument;
 use DOMXPath;
 
@@ -27,7 +30,7 @@ class TransactionResponseUnserializer
     /**
      * @param Transaction $transaction
      */
-    public function __construct(Transaction $transaction)
+    public function __construct($transaction)
     {
         $this->transaction = $transaction;
     }
@@ -41,16 +44,19 @@ class TransactionResponseUnserializer
     {
         $document = new DOMDocument('1.0', 'utf-8');
 
+            if(empty($xml))
+                throw new \UnexpectedValueException('Houve um erro de comunicação com o servidor, tente novamente');
+
         $document->loadXML($xml);
 
         $this->xpath = new DOMXpath($document);
         $this->xpath->registerNamespace('c', TransactionResponseUnserializer::NS);
 
-        if (($code = $this->xpath->query('/c:erro/c:codigo')->item(0)) !== null) {
-            $message = $this->xpath->query('/c:erro/c:mensagem')->item(0)->nodeValue;
+            if (($code = $this->xpath->query('/c:erro/c:codigo')->item(0)) !== null) {
+                $message = $this->xpath->query('/c:erro/c:mensagem')->item(0)->nodeValue;
 
-            throw new CieloException($message, $code->nodeValue);
-        }
+                throw new CieloException($message, $code->nodeValue);
+            }
 
         $this->readTransacao($this->transaction);
         $this->readDadosPedido($this->transaction);
@@ -58,6 +64,8 @@ class TransactionResponseUnserializer
         $this->readAutenticacao($this->transaction);
         $this->readAutorizacao($this->transaction);
         $this->readToken($this->transaction);
+        $this->readCapture($this->transaction);
+        $this->readCancellation($this->transaction);
 
         return $this->transaction;
     }
@@ -78,7 +86,7 @@ class TransactionResponseUnserializer
     /**
      * @param Transaction $transaction
      */
-    private function readTransacao(Transaction $transaction)
+    private function readTransacao($transaction)
     {
         $transaction->setTid($this->getValue('//c:transacao/c:tid'));
         $transaction->setPan($this->getValue('//c:transacao/c:pan'));
@@ -89,7 +97,7 @@ class TransactionResponseUnserializer
     /**
      * @param Transaction $transaction
      */
-    private function readDadosPedido(Transaction $transaction)
+    private function readDadosPedido($transaction)
     {
         $order = $transaction->getOrder();
 
@@ -105,7 +113,7 @@ class TransactionResponseUnserializer
     /**
      * @param Transaction $transaction
      */
-    private function readFormaPagamento(Transaction $transaction)
+    private function readFormaPagamento($transaction)
     {
         $paymentMethod = $transaction->getPaymentMethod();
 
@@ -117,7 +125,7 @@ class TransactionResponseUnserializer
     /**
      * @param Transaction $transaction
      */
-    private function readAutenticacao(Transaction $transaction)
+    private function readAutenticacao($transaction)
     {
         $authentication = new Authentication();
 
@@ -133,7 +141,7 @@ class TransactionResponseUnserializer
     /**
      * @param Transaction $transaction
      */
-    private function readAutorizacao(Transaction $transaction)
+    private function readAutorizacao($transaction)
     {
         $authorization = new Authorization();
 
@@ -151,7 +159,7 @@ class TransactionResponseUnserializer
     /**
      * @param Transaction $transaction
      */
-    private function readToken(Transaction $transaction)
+    private function readToken($transaction)
     {
         $token = new Token();
 
@@ -160,5 +168,37 @@ class TransactionResponseUnserializer
         $token->setNumero($this->getValue('//c:transacao/c:token/c:dados-token/c:numero-cartao-truncado'));
 
         $transaction->setToken($token);
+    }
+
+    /**
+     * @param Transaction $transaction
+     */
+    private function readCapture($transaction)
+    {
+        $captureInformation = new CaptureInformation();
+
+        $captureInformation->setCode($this->getValue('//c:transacao/c:captura/c:codigo'));
+        $captureInformation->setMessage($this->getValue('//c:transacao/c:captura/c:mensagem'));
+        $captureInformation->setDateTime($this->getValue('//c:transacao/c:captura/c:data-hora'));
+        $captureInformation->setValue($this->getValue('//c:transacao/c:captura/c:valor'));
+
+        $transaction->setCaptureInformation($captureInformation);
+
+    }
+
+    /**
+     * @param Transaction $transaction
+     */
+    private function readCancellation($transaction)
+    {
+        $cancellationInformation = new CancellationInformation();
+
+        $cancellationInformation->setCode($this->getValue('//c:transacao/c:cancelamentos/c:cancelamento/c:codigo'));
+        $cancellationInformation->setMessage($this->getValue('//c:transacao/c:cancelamentos/c:cancelamento/c:mensagem'));
+        $cancellationInformation->setDateTime($this->getValue('//c:transacao/c:cancelamentos/c:cancelamento/c:data-hora'));
+        $cancellationInformation->setValue($this->getValue('//c:transacao/c:cancelamentos/c:cancelamento/c:valor'));
+
+        $transaction->setCancellationInformation($cancellationInformation);
+
     }
 }

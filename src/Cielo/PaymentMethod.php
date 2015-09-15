@@ -26,7 +26,7 @@ class PaymentMethod
      * @param int    $product
      * @param int    $installments
      */
-    public function __construct($issuer, $product = PaymentMethod::CREDITO_A_VISTA, $installments = 1)
+    public function __construct($issuer = null, $product = PaymentMethod::CREDITO_A_VISTA, $installments = 1)
     {
         $this->setIssuer($issuer);
         $this->setProduct($product);
@@ -72,6 +72,7 @@ class PaymentMethod
             PaymentMethod::AMEX,
             PaymentMethod::JCB,
             PaymentMethod::AURA,
+            null,
         ];
 
         if (! in_array($issuer, $allowedIssuers, true)) {

@@ -10,7 +10,7 @@ class TransactionRequestSerializer extends RequestSerializer
     /**
      * {@inheritDoc}
      */
-    public function serialize(Transaction $transaction)
+    public function serialize($transaction)
     {
         libxml_use_internal_errors(true);
 
@@ -58,7 +58,7 @@ class TransactionRequestSerializer extends RequestSerializer
      * @param  DOMDocument $document
      * @return \DOMElement
      */
-    private function createRequisicaoTransacao(Transaction $transaction, DOMDocument $document)
+    private function createRequisicaoTransacao($transaction, DOMDocument $document)
     {
         $requisicao = $document->createElementNS(self::NS, 'requisicao-transacao');
 

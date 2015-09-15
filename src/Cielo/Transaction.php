@@ -90,7 +90,7 @@ class Transaction
     private $authorize;
 
     /**
-     * @var bool
+     * @var Capture
      */
     private $capture;
 
@@ -118,6 +118,16 @@ class Transaction
      * @var Token
      */
     private $token;
+
+    /**
+     * @var CaptureInformation
+     */
+    private $captureInformation;
+
+    /**
+     * @var CancellationInformation
+     */
+    private $cancellationInformation;
 
     /**
      * @param Merchant      $merchant
@@ -184,6 +194,22 @@ class Transaction
     public function getAuthorization()
     {
         return $this->authorization;
+    }
+
+    /**
+     * @return CaptureInformation
+     */
+    public function getCaptureInformation()
+    {
+        return $this->captureInformation;
+    }
+
+    /**
+     * @return CancellationInformation
+     */
+    public function getCancellationInformation()
+    {
+        return $this->cancellationInformation;
     }
 
     /**
@@ -447,6 +473,22 @@ class Transaction
     }
 
     /**
+     * @param CaptureInformation $captureInformation
+     */
+    public function setCaptureInformation(CaptureInformation $captureInformation)
+    {
+        $this->captureInformation = $captureInformation;
+    }
+
+    /**
+     * @param CancellationInformation $cancellationInformation
+     */
+    public function setCancellationInformation(CancellationInformation $cancellationInformation)
+    {
+        $this->cancellationInformation = $cancellationInformation;
+    }
+
+    /**
      * @param Authorization $authorization
      */
     public function setAuthorization(Authorization $authorization)
@@ -461,4 +503,5 @@ class Transaction
     {
         $this->token = $token;
     }
+
 }
