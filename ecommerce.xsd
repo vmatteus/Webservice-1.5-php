@@ -370,7 +370,7 @@
 
     			<xsd:simpleType>
     				<xsd:restriction base="xsd:string">
-    					<xsd:pattern value="\d{0}|\d{3,4}"></xsd:pattern>    					
+    					<xsd:pattern value="[0-9]{3,4}"></xsd:pattern>    					
     				</xsd:restriction>
     			</xsd:simpleType>
     		</xsd:element>
@@ -742,10 +742,10 @@
 
     <xsd:complexType name="RequisicaoErro">
     	<xsd:sequence>
+    		<xsd:attribute name="id" type="xsd:string"></xsd:attribute>
     		<xsd:element name="codigo" type="xsd:string"></xsd:element>
     		<xsd:element name="mensagem" type="xsd:string"></xsd:element>
     	</xsd:sequence>
-    		<xsd:attribute name="id" type="xsd:string"></xsd:attribute>
     </xsd:complexType>
 
     <xsd:element name="erro" type="tns:RequisicaoErro"></xsd:element>
