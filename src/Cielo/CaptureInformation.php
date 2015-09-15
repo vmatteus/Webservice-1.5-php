@@ -88,5 +88,4 @@ class CaptureInformation
     {
         $this->value = $value;
     }
-
 }

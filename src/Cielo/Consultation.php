@@ -2,14 +2,15 @@
 
 namespace Cielo;
 
-Class Consultation {
+class Consultation
+{
 
-	/**
-	 * @var string
-	 */
-	public $tid;
+    /**
+     * @var string
+     */
+    public $tid;
 
-	/**
+    /**
      * @var Order
      */
     private $order;
@@ -19,7 +20,7 @@ Class Consultation {
      */
     private $paymentMethod;
 
-	/**
+    /**
      * @var Merchant
      */
     private $merchant;
@@ -49,22 +50,22 @@ Class Consultation {
      */
     private $cancellationInformation;
 
-	/**
-	 * @param Merchant      $merchant
-	 * @param string  		$tid
-	 */
-	public function __construct(
-		Merchant $merchant,
-		$tid
-	) {
-		$this->setMerchant($merchant);
-		$this->order = new Order;
-		$this->paymentMethod = new PaymentMethod;
-		$this->setTidOrOrderNumber($tid);
-		
-	}
+    /**
+     * @param Merchant      $merchant
+     * @param string        $tid
+     */
+    public function __construct(
+        Merchant $merchant,
+        $tid
+    ) {
+        $this->setMerchant($merchant);
+        $this->order = new Order;
+        $this->paymentMethod = new PaymentMethod;
+        $this->setTidOrOrderNumber($tid);
+        
+    }
 
-	/**
+    /**
      * @param Merchant $merchant
      */
     public function setMerchant(Merchant $merchant)
@@ -72,23 +73,24 @@ Class Consultation {
         $this->merchant = $merchant;
     }
 
-	/**
+    /**
      * @param  string $tid
      * @throws \UnexpectedValueException se o número do tid não estiver de 1
      * à 20 caracteres
      */
-	public function setTidOrOrderNumber($tid = null)
-	{
-		
-		if(strlen($tid) < 1 || strlen($tid) > 20 )
-			throw new \UnexpectedValueException("O string de consulta (Tid) deve ter entre 1 à 20 caracteres", 1);
+    public function setTidOrOrderNumber($tid = null)
+    {
+        
+        if (strlen($tid) < 1 || strlen($tid) > 20) {
+            throw new \UnexpectedValueException("O string de consulta (Tid) deve ter entre 1 à 20 caracteres", 1);
+        }
 
-		$this->tid = $tid;
-			
-		
-	}
+        $this->tid = $tid;
+            
+        
+    }
 
-	/**
+    /**
      * @param string $tid
      */
     public function setTid($tid)
@@ -168,15 +170,15 @@ Class Consultation {
         $this->token = $token;
     }
 
-	/**
+    /**
      * @return Consultation Id
      */
-	public function getConsultationId()
-	{
-		return md5(date("YmdHisu"));
-	}
+    public function getConsultationId()
+    {
+        return md5(date("YmdHisu"));
+    }
 
-	/**
+    /**
      * @return Merchant
      */
     public function getMerchant()
@@ -231,6 +233,4 @@ Class Consultation {
     {
         return $this->authorization;
     }
-
-    
 }

@@ -357,7 +357,7 @@ class Transaction
      */
     public function setReturnURL($returnURL)
     {
-        if (! filter_var($returnURL, FILTER_VALIDATE_URL)) {
+        if ($returnURL !=== null && !filter_var($returnURL, FILTER_VALIDATE_URL)) {
             throw new \UnexpectedValueException('URL de retorno inválida');
         }
 
@@ -511,5 +511,4 @@ class Transaction
     {
         $this->token = $token;
     }
-
 }

@@ -21,23 +21,24 @@ class ConsultationRequestSerializer extends RequestSerializer
 
         $document->appendChild($requisicaoTransacao);
 
-            if (is_file('ecommerce.xsd') && is_readable('ecommerce.xsd'))
-                $document->schemaValidate('ecommerce.xsd');
+        if (is_file('ecommerce.xsd') && is_readable('ecommerce.xsd')) {
+            $document->schemaValidate('ecommerce.xsd');
+        }
 
         $exception = new \DomainException('Erro na criação do XML');
         $count = 0;
 
-            foreach (libxml_get_errors() as $error) {
-                $exception = new \DomainException($error->message, $error->code, $exception);
-                ++$count;
-            }
+        foreach (libxml_get_errors() as $error) {
+            $exception = new \DomainException($error->message, $error->code, $exception);
+            ++$count;
+        }
 
         libxml_clear_errors();
 
-            if ($count) {
-                echo $document->saveXML();
-                throw $exception;
-            }
+        if ($count) {
+            echo $document->saveXML();
+            throw $exception;
+        }
 
         return $document->saveXML();
     }
@@ -71,6 +72,4 @@ class ConsultationRequestSerializer extends RequestSerializer
 
         return $requisicao;
     }
-
-    
 }

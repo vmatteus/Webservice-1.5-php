@@ -88,5 +88,4 @@ class CancellationInformation
     {
         $this->value = $value;
     }
-
 }

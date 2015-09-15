@@ -44,19 +44,20 @@ class TransactionResponseUnserializer
     {
         $document = new DOMDocument('1.0', 'utf-8');
 
-            if(empty($xml))
-                throw new \UnexpectedValueException('Houve um erro de comunicação com o servidor, tente novamente');
+        if (empty($xml)) {
+            throw new \UnexpectedValueException('Houve um erro de comunicação com o servidor, tente novamente');
+        }
 
         $document->loadXML($xml);
 
         $this->xpath = new DOMXpath($document);
         $this->xpath->registerNamespace('c', TransactionResponseUnserializer::NS);
 
-            if (($code = $this->xpath->query('/c:erro/c:codigo')->item(0)) !== null) {
-                $message = $this->xpath->query('/c:erro/c:mensagem')->item(0)->nodeValue;
+        if (($code = $this->xpath->query('/c:erro/c:codigo')->item(0)) !== null) {
+            $message = $this->xpath->query('/c:erro/c:mensagem')->item(0)->nodeValue;
 
-                throw new CieloException($message, $code->nodeValue);
-            }
+            throw new CieloException($message, $code->nodeValue);
+        }
 
         $this->readTransacao($this->transaction);
         $this->readDadosPedido($this->transaction);
