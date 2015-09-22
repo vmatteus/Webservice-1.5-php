@@ -9,8 +9,24 @@ Integração em PHP com o Webservice Cielo 1.5
 
 ## Instalação
 
+Se já possui um arquivo `composer.json`, basta adicionar a seguinte dependência ao seu projeto:
+
+```json
+"require": {
+    "developercielo/webservice-1.5-php":"dev-master"
+}
+```
+
+Com a dependência adicionada ao `composer.json`, basta executar:
+
 ```
 composer install
+```
+
+Alternativamente, você pode executar diretamente em seu terminal:
+
+```
+composer require "developercielo/webservice-1.5-php:dev-master"
 ```
 
 ## EXEMPLO DE TRANSAÇÃO
