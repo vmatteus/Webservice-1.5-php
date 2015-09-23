@@ -32,9 +32,9 @@ final class CurlOnlyPostHttpClient implements OnlyPostHttpClientInterface
         
         $return = curl_exec($curl);
         
-        if (curl_errno($curl))
-        throw new \Exception('Curl error: '.curl_error($curl));
-        
+        if (curl_errno($curl)) {
+            throw new \Exception('Curl error: '.curl_error($curl));
+        }
         return $return;
     }
 }
