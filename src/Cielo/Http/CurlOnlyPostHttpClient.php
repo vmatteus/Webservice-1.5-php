@@ -29,7 +29,12 @@ final class CurlOnlyPostHttpClient implements OnlyPostHttpClientInterface
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($fields));
-
-        return curl_exec($curl);
+        
+        $return = curl_exec($curl);
+        
+        if (curl_errno($curl)) {
+            throw new \Exception('Curl error: '.curl_error($curl));
+        }
+        return $return;
     }
 }
