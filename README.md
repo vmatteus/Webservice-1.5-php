@@ -88,7 +88,7 @@ $key = 'xxxx'; //sua chave
 
 $cielo = new Cielo($mid, $key, Cielo::TEST);
 
-$consultation = $cielo->Consultation('10069930693EF9D81001'); //tid da transação
+$consultation = $cielo->consultation('10069930693EF9D81001'); //tid da transação
 
   try {
 
