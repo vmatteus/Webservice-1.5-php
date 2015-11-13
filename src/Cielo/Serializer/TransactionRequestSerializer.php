@@ -106,6 +106,7 @@ class TransactionRequestSerializer extends RequestSerializer
     private function createDadosPortador(Transaction $transaction, DOMDocument $document)
     {
         $holder = $transaction->getHolder();
+        $holderName = $holder->getName();
 
         $token = $holder->getToken();
 
@@ -115,6 +116,11 @@ class TransactionRequestSerializer extends RequestSerializer
         $this->createElementAndAppendWithNs($dadosPortador, 'validade', $holder->getExpiration());
         $this->createElementAndAppendWithNs($dadosPortador, 'indicador', $holder->getCVVIndicator());
         $this->createElementAndAppendWithNs($dadosPortador, 'codigo-seguranca', $holder->getCVV());
+
+        if (!empty($holderName)) {
+            $this->createElementAndAppendWithNs($dadosPortador, 'nome-portador', $holderName);
+        }
+
         $this->createElementAndAppendWithNs($dadosPortador, 'token', empty($token) ? null : $token);
 
         return $dadosPortador;
