@@ -107,13 +107,18 @@ class TransactionRequestSerializer extends RequestSerializer
     {
         $holder = $transaction->getHolder();
         $holderName = $holder->getName();
+        $expiration = $holder->getExpiration();
 
         $token = $holder->getToken();
 
         $dadosPortador = $document->createElementNS(self::NS, 'dados-portador');
 
         $this->createElementAndAppendWithNs($dadosPortador, 'numero', $holder->getCreditCardNumber());
-        $this->createElementAndAppendWithNs($dadosPortador, 'validade', $holder->getExpiration());
+        
+        if (!empty($expiration)) {
+            $this->createElementAndAppendWithNs($dadosPortador, 'validade', $expiration);
+        }
+
         $this->createElementAndAppendWithNs($dadosPortador, 'indicador', $holder->getCVVIndicator());
         $this->createElementAndAppendWithNs($dadosPortador, 'codigo-seguranca', $holder->getCVV());
 
